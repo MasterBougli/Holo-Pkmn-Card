@@ -3,7 +3,11 @@
 import type { CSSProperties,ReactNode } from "react";
 import type { ResolvedAppearance } from "@/lib/card-appearance";
 const rarity={none:"",classic:"rare holo",illusion:"rare ultra",glitter:"rare secret",rainbow:"rare rainbow",galaxy:"rare holo cosmos"};
-export function HoloSurface({profile,light,children,hidden}:{hidden?:boolean;profile:ResolvedAppearance;light:{x:number;y:number};children:ReactNode}){
+export function HoloSurface({profile,rotation,children,hidden}:{hidden?:boolean;profile:ResolvedAppearance;rotation:{x:number;y:number};children:ReactNode}){
+ // La lumière est fixe dans la scène : sa projection dépend de l'orientation,
+ // jamais de la position du pointeur. Fonction périodique, continue sur 360°.
+ const radians=Math.PI/180;
+ const light={x:50+45*Math.sin(rotation.y*radians),y:Math.max(0,Math.min(100,50-70*Math.sin(rotation.x*radians)))};
  const w=profile.artworkWindow;
  const right=100-w.left-w.width,bottom=100-w.top-w.height;
  const clip=profile.finish==="fullart"?"inset(0)":profile.finish==="normal"

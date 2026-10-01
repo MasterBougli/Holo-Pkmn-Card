@@ -25,12 +25,12 @@ Les fichiers CSS et textures originaux restent dans public/ du dépôt amont, av
 1. Servir les textures utilisées dans public/img sous public/vendor/pokemon-holo/img.
 2. Importer app/card-holo.css après les styles de base du site.
 3. Utiliser HoloSurface dans un conteneur de carte positionné, avec une image recto et un dos séparé.
-4. Fournir les variables de pointeur et un ResolvedAppearance validé : effect, intensity, artworkWindow et finish.
+4. Fournir la rotation en degrés (rotation.x et rotation.y) : la lumière est dérivée de l’orientation, sans suivi du pointeur. Fournir également et un ResolvedAppearance validé : effect, intensity, artworkWindow et finish.
 5. La rotation, la fiche native et les styles de mise en page du site hôte restent nécessaires. Le moteur holo ne recrée pas à lui seul toute l’application.
 6. Pour les réglages persistants, adapter les imports du site hôte (base Drizzle, auth, manifeste du catalogue) et appliquer la migration SQL. Le contrôle admin est effectué côté serveur, via une liste d’identifiants internes configurée hors dépôt.
 7. Garder les sources correspondantes, le texte GPL et les crédits accessibles aux utilisateurs lors de la distribution.
 
 ## Vérifications
 
-Compilation Webpack/TypeScript à effectuer dans le projet hôte sur le VPS.
+Compilation Webpack/TypeScript réalisée dans le projet hôte sur le VPS pour la première intégration. Les corrections 0.0.2 ajoutent les cadres XY/classique/moderne et une lumière liée à la rotation. Les contrôles détaillés restent ceux du projet hôte.
 Aucune dépendance du jeu ni donnée privée ne doit être commise dans ce fork.

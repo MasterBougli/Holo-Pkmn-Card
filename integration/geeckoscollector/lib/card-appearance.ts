@@ -16,7 +16,7 @@ export type ResolvedAppearance = HoloProfile & {
   source:"default" | "set" | "card";
 };
 
-const artworkWindow:ArtworkWindow = {top:16,left:7,width:86,height:33};
+const artworkWindow:ArtworkWindow = {top:10,left:8,width:84,height:38};
 export const defaultHoloProfile:HoloProfile = {
   effect:"none",intensity:0.3,artworkWindow,
 };
@@ -27,10 +27,11 @@ export function resolveCardAppearance(
   finish:CardFinish,
   setOverrides:AppearanceOverrides = {},
   cardOverrides:AppearanceOverrides = {},
+  baseWindow:ArtworkWindow = defaultHoloProfile.artworkWindow,
 ):ResolvedAppearance {
   const setProfile=setOverrides[finish];
   const cardProfile=cardOverrides[finish];
-  const merged={...defaultHoloProfile,...setProfile,...cardProfile};
+  const merged={...defaultHoloProfile,artworkWindow:baseWindow,...setProfile,...cardProfile};
   return {
     ...merged,
     artworkWindow:{...merged.artworkWindow},

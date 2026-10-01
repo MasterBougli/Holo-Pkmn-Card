@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { useEffect, useId, useRef, useState } from "react";
-import type { CSSProperties, PointerEvent } from "react";
+import type { PointerEvent } from "react";
 import { X } from "lucide-react";
 import { HoloSurface } from "@/components/holo-surface";
 import { resolveCardAppearance,type AppearanceOverrides,type CardFinish,type HoloEffect } from "@/lib/card-appearance";
@@ -17,7 +17,6 @@ export function CardViewer({card,setCode,setName,children,previewProfiles}:{card
   const drag=useRef<{x:number;y:number;rx:number;ry:number}|null>(null);
   const [open,setOpen]=useState(false);
   const [rotation,setRotation]=useState({x:0,y:0});
-  const [light,setLight]=useState({x:50,y:50});
   const [finish,setFinish]=useState<CardFinish>("normal");
   const [effect,setEffect]=useState<HoloEffect>("none");
   const [profiles,setProfiles]=useState<AppearanceOverrides>({});
@@ -32,7 +31,7 @@ export function CardViewer({card,setCode,setName,children,previewProfiles}:{card
     document.body.style.overflow="hidden";
     const controller=new AbortController();
     dialog.current?.showModal();
-    setLoading(true);setError("");setDetails(null);setRotation({x:0,y:0});setLight({x:50,y:50});setFinish("normal");setEffect("none");
+    setLoading(true);setError("");setDetails(null);setRotation({x:0,y:0});setFinish("normal");setEffect("none");
     fetch("/api/catalogue/"+encodeURIComponent(setCode)+"/"+encodeURIComponent(card.id),{signal:controller.signal})
       .then(async response=>{if(!response.ok)throw new Error();return response.json()})
        .then(data=>{
@@ -47,8 +46,6 @@ export function CardViewer({card,setCode,setName,children,previewProfiles}:{card
     return()=>{controller.abort();drag.current=null;document.body.style.overflow=previousOverflow;dialog.current?.close();trigger.current?.focus()};
   },[open,card.id,setCode,previewProfiles]);
   function move(event:PointerEvent<HTMLDivElement>){
-    const bounds=event.currentTarget.getBoundingClientRect();
-    setLight({x:Math.max(0,Math.min(100,(event.clientX-bounds.left)/bounds.width*100)),y:Math.max(0,Math.min(100,(event.clientY-bounds.top)/bounds.height*100))});
     if(!drag.current)return;
     setRotation({x:Math.max(-40,Math.min(40,drag.current.rx-(event.clientY-drag.current.y)*0.2)),y:drag.current.ry+(event.clientX-drag.current.x)*0.8});
   }
@@ -64,8 +61,8 @@ export function CardViewer({card,setCode,setName,children,previewProfiles}:{card
           event.preventDefault();
           setRotation(v=>({x:0,y:event.key==="Home"?0:v.y+(event.key==="ArrowLeft"?-90:90)}));
         }} onPointerDown={event=>{if(event.button!==0)return;event.currentTarget.focus();event.currentTarget.setPointerCapture(event.pointerId);drag.current={x:event.clientX,y:event.clientY,rx:rotation.x,ry:rotation.y}}} onPointerMove={move} onPointerUp={()=>{drag.current=null}} onPointerCancel={()=>{drag.current=null}} onLostPointerCapture={()=>{drag.current=null}}>
-          <div className="card-rotator" style={{transform:"rotateX("+rotation.x+"deg) rotateY("+rotation.y+"deg)","--foil-x":light.x+"%","--foil-y":light.y+"%"} as CSSProperties}>
-            <HoloSurface hidden={backVisible} profile={profile} light={light}>{frontMissing?<p>Illustration indisponible</p>:<Image src={"/media/Cards/"+setCode+"/"+card.id+".png"} width={600} height={825} unoptimized alt={card.name+", recto"} draggable={false} onError={()=>setFrontMissing(true)}/>}</HoloSurface>
+          <div className="card-rotator" style={{transform:"rotateX("+rotation.x+"deg) rotateY("+rotation.y+"deg)"}}>
+            <HoloSurface hidden={backVisible} profile={profile} rotation={rotation}>{frontMissing?<p>Illustration indisponible</p>:<Image src={"/media/Cards/"+setCode+"/"+card.id+".png"} width={600} height={825} unoptimized alt={card.name+", recto"} draggable={false} onError={()=>setFrontMissing(true)}/>}</HoloSurface>
             <div className="card-face card-back" aria-hidden={!backVisible}>{backMissing?<p>Dos de carte indisponible</p>:<Image src="/media/Cards/card-back.png" width={600} height={825} unoptimized alt="Dos de la carte Pokémon" draggable={false} onError={()=>setBackMissing(true)}/>}</div>
           </div>
         </div>
