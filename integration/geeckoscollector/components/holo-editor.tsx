@@ -9,7 +9,7 @@ import type { CatalogueCard } from "@/lib/catalogue";
 import { CardViewer } from "@/components/card-viewer";
 const labels={normal:"Normale",reverse:"Reverse",fullart:"Full art"};
 const effects={none:"Aucun",classic:"Classique",illusion:"Illusion",glitter:"Glitter · paillettes",rainbow:"Rainbow",galaxy:"Cosmos · galaxy"};
-export function HoloEditor({setCode,setName,card,targetCardId,inherited,initial,baseWindow}:{setCode:string;setName:string;card:CatalogueCard;targetCardId:string;inherited:AppearanceOverrides;initial:AppearanceOverrides;baseWindow:ArtworkWindow}){
+export function HoloEditor({setCode,setName,card,targetCardId,inherited,initial,baseWindow,canEdit=true}:{setCode:string;setName:string;card:CatalogueCard;targetCardId:string;inherited:AppearanceOverrides;initial:AppearanceOverrides;baseWindow:ArtworkWindow;canEdit?:boolean}){
  const [settings,setSettings]=useState<AppearanceOverrides>(initial);
  const [saved,setSaved]=useState<AppearanceOverrides>(initial);
  const [activeFinish,setActiveFinish]=useState<CardFinish>("normal");
@@ -23,6 +23,7 @@ export function HoloEditor({setCode,setName,card,targetCardId,inherited,initial,
   setStatus("");
  }
  async function save(){
+  if(!canEdit)return;
   if(!isAppearanceOverrides(settings)){setStatus("Vérifie les valeurs et la zone de l’illustration.");return;}
   setSaving(true);setStatus("");
   try{
@@ -42,7 +43,7 @@ export function HoloEditor({setCode,setName,card,targetCardId,inherited,initial,
  <div className="admin-section-heading"><Sparkles aria-hidden="true"/><div><h3>Composer le reflet</h3><p>Chaque finition garde ses propres réglages.</p></div></div>
  <div className="admin-finish-tabs" role="group" aria-label="Finition à modifier">{cardFinishes.map(finish=><button type="button" key={finish} aria-pressed={activeFinish===finish} onClick={()=>setActiveFinish(finish)}>{labels[finish]}<span>{settings[finish]?"Personnalisée":"Héritée"}</span></button>)}</div>
  <div className="admin-frame-picker">
- <label>Appliquer un cadre de référence<select disabled={saving} defaultValue="" onChange={event=>{
+ <label>Appliquer un cadre de référence<select disabled={saving||!canEdit} defaultValue="" onChange={event=>{
  const key=event.target.value as ArtworkLayout;
  if(!(key in artworkLayouts))return;
  const artworkWindow={...artworkLayouts[key].window};
@@ -55,7 +56,7 @@ export function HoloEditor({setCode,setName,card,targetCardId,inherited,initial,
  }}><option value="">Choisir un cadre pour normale et reverse</option>{Object.entries(artworkLayouts).map(([key,layout])=><option key={key} value={key}>{layout.label}</option>)}</select></label>
  <p>Le cadre règle ensemble la zone holo normale et le trou reverse. Ajuste les pourcentages par finition pour les cartes avec un cadre particulier.</p>
  </div>
- {[activeFinish].map(finish=>{const profile=resolveCardAppearance(finish,inherited,settings,baseWindow);const custom=Boolean(settings[finish]);return <fieldset className="holo-profile-row" key={finish} disabled={saving}><legend>{labels[finish]}</legend>
+ {[activeFinish].map(finish=>{const profile=resolveCardAppearance(finish,inherited,settings,baseWindow);const custom=Boolean(settings[finish]);return <fieldset className="holo-profile-row" key={finish} disabled={saving||!canEdit}><legend>{labels[finish]}</legend>
  <label><span><input type="checkbox" checked={custom} onChange={event=>{if(event.target.checked)change(finish,profile);else setSettings(value=>{const next={...value};delete next[finish];return next;});setStatus("");}}/> Utiliser un réglage spécifique</span></label>
  <p>{custom?"Profil personnalisé":targetCardId?"Hérite du set":"Utilise le cadre de référence du set, sans effet"}</p>
  <label>Effet<select value={profile.effect} disabled={!custom} onChange={event=>change(finish,{effect:event.target.value as HoloProfile["effect"]})}>{holoEffects.map(effect=><option key={effect} value={effect}>{effects[effect]}</option>)}</select></label>
@@ -71,8 +72,8 @@ export function HoloEditor({setCode,setName,card,targetCardId,inherited,initial,
  <div className="admin-inheritance-note"><strong>Priorité des réglages</strong><span>Carte → Set → Cadre de référence</span></div>
  </aside>
  <div className="admin-save-bar">
- <div role="status" aria-live="polite"><strong>{status||(dirty?"Modifications non enregistrées":"Réglages à jour")}</strong><span>Les trois finitions sont enregistrées ensemble.</span></div>
- <div className="admin-save-actions"><button type="button" className="quiet-button" disabled={saving||!dirty} onClick={()=>{setSettings(saved);setStatus("");}}><RotateCcw aria-hidden="true"/>Annuler les modifications</button><button type="button" className="button game-primary" disabled={saving||!dirty} onClick={save}><Save aria-hidden="true"/>{saving?"Enregistrement…":"Enregistrer"}</button></div>
+ <div role="status" aria-live="polite"><strong>{status||(!canEdit?"Lecture seule":dirty?"Modifications non enregistrées":"Réglages à jour")}</strong><span>Les trois finitions sont enregistrées ensemble.</span></div>
+ <div className="admin-save-actions"><button type="button" className="quiet-button" disabled={saving||!dirty||!canEdit} onClick={()=>{setSettings(saved);setStatus("");}}><RotateCcw aria-hidden="true"/>Annuler les modifications</button><button type="button" className="button game-primary" disabled={saving||!dirty||!canEdit} onClick={save}><Save aria-hidden="true"/>{saving?"Enregistrement…":"Enregistrer"}</button></div>
  </div>
  </div>;
 }

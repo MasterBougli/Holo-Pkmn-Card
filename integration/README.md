@@ -1,4 +1,4 @@
-# Intégration GeeckosCollector — 0.0.1
+# Intégration GeeckosCollector — 0.0.6
 
 Cette adaptation utilise Pokémon Cards CSS de Simon Goellner (@simeydotme), GPL-3.0.
 Sources amont : https://github.com/simeydotme/pokemon-cards-css
@@ -27,7 +27,7 @@ Les fichiers CSS et textures originaux restent dans public/ du dépôt amont, av
 3. Utiliser HoloSurface dans un conteneur de carte positionné, avec une image recto et un dos séparé.
 4. Fournir la rotation en degrés (rotation.x et rotation.y) : la lumière est dérivée de l’orientation, sans suivi du pointeur. Fournir également et un ResolvedAppearance validé : effect, intensity, artworkWindow et finish.
 5. La rotation, la fiche native et les styles de mise en page du site hôte restent nécessaires. Le moteur holo ne recrée pas à lui seul toute l’application.
-6. Pour les réglages persistants, adapter les imports du site hôte (base Drizzle, auth, manifeste du catalogue) et appliquer la migration SQL. Le contrôle admin est effectué côté serveur, via une liste d’identifiants internes configurée hors dépôt.
+6. Pour les réglages persistants, adapter les imports du site hôte (base Drizzle, auth, manifeste du catalogue) et appliquer la migration SQL. Le contrôle admin utilise des rôles et permissions cumulées, relus côté serveur. La liste privée ADMIN_USER_IDS réserve le statut de superadministrateur au compte protégé du site hôte.
 7. Garder les sources correspondantes, le texte GPL et les crédits accessibles aux utilisateurs lors de la distribution.
 
 ## Vérifications
@@ -38,3 +38,9 @@ Aucune dépendance du jeu ni donnée privée ne doit être commise dans ce fork.
 ## Tranche 3D — 0.0.5
 
 Importer app/card-thickness.css dans le projet hôte. CardThickness est utilisé uniquement dans CardViewer : recto et dos à ±1,5 px, côtés blancs et coins arrondis segmentés. L’aperçu plat dans l’administration reste sans extrusion.
+
+## Administration et permissions — 0.0.6
+
+Navigation partagée, rôles personnalisés, attributions multiples, délégation limitée aux droits de l’auteur et journal en lecture seule. Le module holo sépare lecture et modification. Les mutations relisent les permissions sous verrou transactionnel ; les rôles ont une révision pour prévenir l’écrasement simultané. Migration 0003 à appliquer dans le site hôte, après sauvegarde. Aucun compte ne reçoit automatiquement les nouveaux rôles.
+
+Les imports du site hôte auth, db, auth-schema, player-ui et catalogue restent des interfaces à adapter. Aucun secret ni compte réel n’est inclus. Les droits des futurs modules sont réservés, sans outil correspondant à cette version.

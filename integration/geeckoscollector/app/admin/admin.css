@@ -66,3 +66,67 @@ body[data-theme=sombre] .admin-sidebar nav a,body[data-theme=sombre] .admin-fini
 body[data-contrast=renforce] .admin-workspace section,body[data-contrast=renforce] .admin-sidebar,body[data-contrast=renforce] .admin-save-bar,body[data-contrast=renforce] .admin-preview-panel { border-color:var(--ink); }
 @media(max-width:1120px) { .admin-workspace { grid-template-columns:1fr; } .admin-sidebar { position:static; display:flex; align-items:center; flex-wrap:wrap; gap:12px; padding:14px 18px; } .admin-brand { padding:0; margin-right:auto; } .admin-sidebar .admin-nav-label,.admin-future { display:none; } .admin-return { margin:0; border:0; } }
 @media(max-width:760px) { .admin-workspace { padding:0 14px; gap:20px; } .admin-page-header,.admin-edit-heading { align-items:flex-start; flex-direction:column; } .admin-target-grid,.admin-holo-editor { grid-template-columns:1fr; } .admin-preview-panel { position:static; } .admin-target-panel,.admin-settings-panel,.admin-preview-panel { padding:18px; } .admin-save-bar { padding:18px; } .admin-save-actions { width:100%; } .admin-save-actions button { flex:1 1 180px; justify-content:center; } .admin-sidebar nav { width:100%; } .admin-sidebar nav a { justify-content:center; } }
+
+/* Missions de l’équipe : liste de rôles et fiches accessibles. */
+.admin-sidebar nav { display:grid; gap:8px; }
+.admin-sidebar nav a { background:transparent; border-color:transparent; }
+.admin-sidebar nav a[aria-current=page] { background:var(--cyan-soft,#ddf5f7); border-color:var(--line); }
+.admin-workspace button { cursor:pointer; }
+.admin-workspace button:disabled { cursor:not-allowed; opacity:.65; }
+.admin-workspace button svg { width:18px; height:18px; flex-shrink:0; }
+.admin-workspace input:not([type=checkbox]):not([type=hidden]),.admin-workspace textarea { width:100%; min-width:0; min-height:46px; padding:10px 12px; font:inherit; color:var(--ink); background:var(--card); border:1px solid var(--line); border-radius:10px; }
+.admin-workspace textarea { resize:vertical; }
+.admin-workspace fieldset { min-width:0; }
+.admin-workspace :focus-visible { outline:3px solid var(--ink); outline-offset:3px; }
+.admin-protection { display:flex; gap:14px; align-items:center; padding:20px 24px; background:var(--card); border:2px solid var(--line); border-left:6px solid #158794; border-radius:16px; margin:0 0 24px; }
+.admin-protection>svg { width:30px; height:30px; flex-shrink:0; }
+.admin-protection p { margin:6px 0 0; color:var(--muted); font-size:.85em; line-height:1.6; }
+.admin-role-layout { display:grid; grid-template-columns:minmax(230px,.7fr) minmax(0,1.7fr); gap:22px; align-items:start; }
+.admin-role-library,.admin-role-editor,.admin-account-card,.admin-audit-card { padding:24px; background:var(--card); border:1px solid var(--line); border-radius:18px; box-shadow:0 4px 0 var(--line); min-width:0; }
+.admin-role-library .button { width:100%; justify-content:center; margin-bottom:12px; }
+.admin-role-list { display:grid; gap:12px; margin:16px 0; }
+.admin-role-card { display:grid; gap:8px; text-align:left; padding:18px; min-height:88px; border:1px solid var(--line); border-radius:12px; background:var(--card); color:var(--ink); font:inherit; width:100%; overflow-wrap:anywhere; }
+.admin-role-card[aria-pressed=true] { border:2px solid #158794; background:var(--cyan-soft,#ddf5f7); padding:17px; }
+.admin-role-card span,.admin-role-card small { font-size:.8em; color:var(--muted); line-height:1.5; }
+.admin-helper { font-size:.85em; line-height:1.65; color:var(--muted); }
+.admin-role-fields { border:0; padding:0; margin:0 0 18px; display:grid; gap:16px; }
+.admin-role-fields label,.admin-account-search label { display:grid; gap:8px; font-size:.9em; font-weight:700; }
+.admin-permission-groups { display:grid; gap:18px; }
+.admin-permission-group { border:1px solid var(--line); border-radius:12px; padding:12px 16px 16px; margin:0; }
+.admin-permission-group legend { font-weight:800; padding:0 8px; font-size:.9em; }
+.admin-coming { font-size:.8em; font-weight:500; margin-left:8px; color:var(--muted); }
+.admin-check { display:flex; align-items:center; gap:10px; min-height:44px; padding:8px 0; line-height:1.4; font-size:.88em; cursor:pointer; }
+.admin-check input[type=checkbox] { width:20px; height:20px; min-width:20px; accent-color:#158794; margin:0; }
+.admin-check:has(input:disabled) { cursor:default; }
+.admin-check small { display:block; color:var(--muted); font-size:.8em; margin-top:5px; }
+.admin-role-actions { border-top:1px solid var(--line); padding-top:16px; margin-top:24px; }
+.admin-role-actions>div,.admin-pagination { display:flex; flex-wrap:wrap; align-items:center; gap:12px; }
+.admin-role-actions button,.admin-account-card button,.admin-account-search button { display:inline-flex; gap:8px; align-items:center; min-height:46px; }
+.admin-role-actions [role=status],.admin-account-card [role=status] { font-size:.9em; line-height:1.5; }
+.admin-confirm { border:1px solid var(--line); padding:16px; border-radius:12px; margin-top:16px; }
+.admin-confirm p { flex-basis:100%; margin:0; }
+.admin-account-search { display:flex; align-items:end; gap:16px; flex-wrap:wrap; }
+.admin-account-search label { flex:1 1 240px; }
+.admin-account-list,.admin-audit-list { display:grid; gap:20px; margin-top:24px; }
+.admin-account-card header { display:flex; align-items:center; gap:14px; margin-bottom:18px; }
+.admin-account-avatar { display:grid; place-items:center; flex-shrink:0; width:48px; height:48px; border:2px solid var(--line); border-radius:14px; font-weight:800; background:var(--cyan-soft,#ddf5f7); }
+.admin-account-card h2,.admin-audit-card h2 { margin:0 0 6px; font-size:1.15em; overflow-wrap:anywhere; }
+.admin-account-card header span { font-size:.85em; color:var(--muted); }
+.admin-account-card fieldset { border:1px solid var(--line); border-radius:12px; padding:8px 16px; }
+.admin-account-card legend { font-weight:800; padding:0 8px; }
+.admin-account-role-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); column-gap:24px; }
+.admin-protection-message { display:flex; align-items:center; gap:10px; font-size:.9em; }
+.admin-protection-message svg { width:22px; flex-shrink:0; }
+.admin-effective { margin:18px 0; font-size:.9em; }
+.admin-workspace summary { cursor:pointer; padding:12px 0; line-height:1.5; min-height:44px; }
+.admin-workspace details ul { padding-left:24px; line-height:1.8; }
+.admin-pagination { justify-content:center; margin:28px 0; }
+.admin-audit-card header { display:flex; justify-content:space-between; flex-wrap:wrap; gap:16px; }
+.admin-audit-card header p,.admin-audit-card time { color:var(--muted); font-size:.85em; margin:8px 0; }
+.admin-audit-card h2 { margin-top:10px; }
+.admin-audit-diff { display:grid; grid-template-columns:1fr 1fr; gap:24px; border-top:1px solid var(--line); }
+.admin-audit-diff section { min-width:0; font-size:.9em; overflow-wrap:anywhere; }
+body[data-theme=sombre] .admin-role-card[aria-pressed=true],body[data-theme=sombre] .admin-account-avatar,body[data-theme=sombre] .admin-sidebar nav a[aria-current=page] { background:#163b4c; }
+body[data-contrast=renforce] .admin-role-card,body[data-contrast=renforce] .admin-role-editor,body[data-contrast=renforce] .admin-account-card,body[data-contrast=renforce] .admin-audit-card,body[data-contrast=renforce] .admin-permission-group { border-color:var(--ink); }
+@media(max-width:1120px) { .admin-sidebar nav { display:flex; flex-wrap:wrap; } }
+@media(max-width:760px) { .admin-role-layout,.admin-account-role-grid,.admin-audit-diff { grid-template-columns:1fr; } .admin-role-library,.admin-role-editor,.admin-account-card,.admin-audit-card { padding:18px; } .admin-protection { padding:18px; } .admin-account-search button { width:100%; justify-content:center; } .admin-role-actions>div>button { flex:1 1 180px; justify-content:center; } .admin-sidebar nav { display:grid; grid-template-columns:1fr; } }
