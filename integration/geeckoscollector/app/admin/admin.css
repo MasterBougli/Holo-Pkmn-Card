@@ -140,6 +140,8 @@ body[data-contrast=renforce] .admin-role-card,body[data-contrast=renforce] .admi
 .admin-config-grid,.admin-config-preview-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:22px; }
 .admin-config-fields { border:0; margin:0; padding:0; display:grid; gap:20px; }
 .admin-config-fields .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; border:0; }
+.admin-config-fields label.admin-check { display:flex; align-items:center; gap:10px; }
+.admin-config-fields label.admin-check input { margin:0; }
 .admin-config-fields label:not(.admin-check) { display:grid; gap:10px; font-size:.9em; font-weight:700; }
 .admin-config-fields textarea { line-height:1.6; }
 .admin-config-rules { display:flex; align-items:start; gap:10px; padding:16px; margin:22px 0 12px; border:1px dashed var(--line); border-radius:12px; }
