@@ -52,3 +52,8 @@ If you think this is super cool, or useful, and want to donate a little, then yo
 
 <sub>- Galaxy Holo from [aschefield101](https://www.deviantart.com/aschefield101/art/HoloSheet-2012-313543843)</sub>  
 <sub>- Some backgrounds from [Vecteezy](https://www.vecteezy.com/free-photos)</sub>
+
+
+## Adaptation GeeckosCollector
+
+Voir [integration/README.md](integration/README.md) pour les sources et les réglages holo par set et par carte. Édition du fork : **0.0.1**. Licence et crédits amont conservés.
