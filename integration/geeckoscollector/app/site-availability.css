@@ -1,0 +1,16 @@
+.site-availability { display:flex; align-items:start; gap:14px; padding:18px 22px; margin-bottom:24px; border:1px solid var(--line); border-left:5px solid #168ca3; border-radius:16px; background:var(--card); color:var(--ink); }
+.site-availability>svg { width:24px; height:24px; flex-shrink:0; margin-top:2px; }
+.site-availability p { font-size:.9em; line-height:1.65; white-space:pre-wrap; overflow-wrap:anywhere; margin:6px 0; }
+.site-availability small { display:block; font-size:.8em; line-height:1.6; color:var(--muted); }
+.availability-wrap { display:grid; place-items:center; min-height:55vh; padding-top:24px; padding-bottom:60px; }
+.availability-card { width:min(700px,100%); padding:36px; border:1px solid var(--line); border-radius:24px; background:var(--card); color:var(--ink); box-shadow:0 8px 0 var(--line); }
+.availability-seal { display:grid; place-items:center; width:70px; height:70px; margin:0 0 24px; background:var(--cyan-soft,#ddf5f7); color:#123b60; border:2px solid var(--line); border-radius:20px; }
+.availability-card h1 { font-size:clamp(1.8em,4vw,2.7em); line-height:1.2; margin:14px 0 20px; }
+.availability-message { white-space:pre-wrap; overflow-wrap:anywhere; line-height:1.7; }
+.availability-info { padding:18px; margin:22px 0; border:1px dashed var(--line); border-radius:14px; color:var(--ink); background:var(--card); font-size:.9em; line-height:1.7; }
+.availability-info p { margin:8px 0; }
+.availability-actions { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+.availability-actions .button,.availability-actions .quiet-button { display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:46px; }
+body[data-theme=dark] .availability-seal { background:#163b4c; color:var(--ink); }
+body[data-contrast=renforce] .site-availability,body[data-contrast=renforce] .availability-card,body[data-contrast=renforce] .availability-info { border-color:var(--ink); }
+@media(max-width:600px) { .site-availability { padding:16px; width:calc(100% - 28px); } .availability-card { padding:24px; } .availability-actions>a,.availability-actions>button { flex:1 1 180px; } }

@@ -2,7 +2,7 @@ export const permissionGroups = [
  {label:"Administration",future:false,items:[["admin.access","Ouvrir l’administration"],["audit.read","Consulter le journal"]]},
  {label:"Rôles et comptes",future:false,items:[["roles.read","Voir les rôles"],["roles.create","Créer un rôle"],["roles.edit","Modifier les rôles et permissions"],["roles.delete","Archiver un rôle"],["roles.assign","Attribuer et retirer des rôles"],["users.read","Consulter les comptes"]]},
  {label:"Apparence des cartes",future:false,items:[["holo.read","Voir les réglages holo"],["holo.edit","Modifier les réglages holo"]]},
- {label:"Configuration",future:true,items:[["config.read","Lire la configuration"],["config.edit","Modifier la configuration"]]},
+ {label:"Configuration",future:false,items:[["config.read","Lire la configuration"],["config.edit","Modifier la configuration"]]},
  {label:"Catalogue et imports",future:true,items:[["catalogue.read","Consulter le catalogue administrateur"],["catalogue.create","Créer des sets et cartes"],["catalogue.edit","Modifier des sets et cartes"],["catalogue.delete","Supprimer des sets et cartes"],["catalogue.activate","Activer et désactiver des sets"],["catalogue.import","Lancer des imports"]]},
  {label:"Actualités",future:true,items:[["news.read","Voir les actualités administrateur"],["news.create","Créer une actualité"],["news.edit","Modifier une actualité"],["news.delete","Supprimer une actualité"],["news.publish","Publier et dépublier une actualité"]]},
  {label:"Événements",future:true,items:[["events.read","Voir les événements administrateur"],["events.create","Créer un événement"],["events.edit","Modifier un événement"],["events.delete","Supprimer un événement"],["events.publish","Publier et arrêter un événement"]]},

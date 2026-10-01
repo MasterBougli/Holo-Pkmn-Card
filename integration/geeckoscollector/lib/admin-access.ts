@@ -4,9 +4,8 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { adminRoles,adminUserRoles } from "@/lib/admin-schema";
 import { can,permissionKeys,type AdminAccess,type AdminPermission } from "@/lib/admin-permissions";
-export function isSuperAdmin(id:string){
- return (process.env.ADMIN_USER_IDS??"").split(",").map(value=>value.trim()).filter(Boolean).includes(id);
-}
+import { isSuperAdmin } from "@/lib/admin-identity";
+export { isSuperAdmin } from "@/lib/admin-identity";
 export type AdminTransaction=Parameters<Parameters<typeof db.transaction>[0]>[0];
 export async function getAdminAccess(id:string,connection:typeof db|AdminTransaction=db):Promise<AdminAccess>{
  if(isSuperAdmin(id))return {superAdmin:true,permissions:[...permissionKeys]};
