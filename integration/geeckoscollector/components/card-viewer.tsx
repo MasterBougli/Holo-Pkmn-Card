@@ -3,6 +3,7 @@ import Image from "next/image";
 import { useEffect, useId, useRef, useState } from "react";
 import type { PointerEvent } from "react";
 import { X } from "lucide-react";
+import { CardThickness } from "@/components/card-thickness";
 import { HoloSurface } from "@/components/holo-surface";
 import { resolveCardAppearance,type AppearanceOverrides,type CardFinish,type HoloEffect } from "@/lib/card-appearance";
 import type { CatalogueCard } from "@/lib/catalogue";
@@ -62,6 +63,7 @@ export function CardViewer({card,setCode,setName,children,previewProfiles}:{card
           setRotation(v=>({x:0,y:event.key==="Home"?0:v.y+(event.key==="ArrowLeft"?-90:90)}));
         }} onPointerDown={event=>{if(event.button!==0)return;event.currentTarget.focus();event.currentTarget.setPointerCapture(event.pointerId);drag.current={x:event.clientX,y:event.clientY,rx:rotation.x,ry:rotation.y}}} onPointerMove={move} onPointerUp={()=>{drag.current=null}} onPointerCancel={()=>{drag.current=null}} onLostPointerCapture={()=>{drag.current=null}}>
           <div className="card-rotator" style={{transform:"rotateX("+rotation.x+"deg) rotateY("+rotation.y+"deg)"}}>
+            <CardThickness/>
             <HoloSurface hidden={backVisible} profile={profile} rotation={rotation}>{frontMissing?<p>Illustration indisponible</p>:<Image src={"/media/Cards/"+setCode+"/"+card.id+".png"} width={600} height={825} unoptimized alt={card.name+", recto"} draggable={false} onError={()=>setFrontMissing(true)}/>}</HoloSurface>
             <div className="card-face card-back" aria-hidden={!backVisible}>{backMissing?<p>Dos de carte indisponible</p>:<Image src="/media/Cards/card-back.png" width={600} height={825} unoptimized alt="Dos de la carte Pokémon" draggable={false} onError={()=>setBackMissing(true)}/>}</div>
           </div>

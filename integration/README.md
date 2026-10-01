@@ -34,3 +34,7 @@ Les fichiers CSS et textures originaux restent dans public/ du dépôt amont, av
 
 Compilation Webpack/TypeScript réalisée dans le projet hôte sur le VPS pour la première intégration. Les corrections 0.0.2 ajoutent les cadres XY/classique/moderne et une lumière liée à la rotation. Les contrôles détaillés restent ceux du projet hôte.
 Aucune dépendance du jeu ni donnée privée ne doit être commise dans ce fork.
+
+## Tranche 3D — 0.0.5
+
+Importer app/card-thickness.css dans le projet hôte. CardThickness est utilisé uniquement dans CardViewer : recto et dos à ±1,5 px, côtés blancs et coins arrondis segmentés. L’aperçu plat dans l’administration reste sans extrusion.
