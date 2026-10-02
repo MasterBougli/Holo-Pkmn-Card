@@ -1,4 +1,4 @@
-# Intégration GeeckosCollector — 0.0.8
+# Intégration GeeckosCollector — 0.0.9
 
 Cette adaptation utilise Pokémon Cards CSS de Simon Goellner (@simeydotme), GPL-3.0.
 Sources amont : https://github.com/simeydotme/pokemon-cards-css
@@ -45,7 +45,7 @@ Navigation partagée, rôles personnalisés, attributions multiples, délégatio
 
 Les imports du site hôte auth, db, auth-schema, player-ui et catalogue restent des interfaces à adapter. Aucun secret ni compte réel n’est inclus. Les droits des futurs modules sont réservés, sans outil correspondant à cette version.
 
-## Configuration du site hôte — 0.0.8
+## Configuration du site hôte — 0.0.9
 
 La navigation de l’atelier propose le module Configuration, avec les permissions config.read et config.edit. Le journal commun affiche ses changements. Migration 0004 : maintenance désactivée et inscriptions autorisées au départ. Aucun accès ou compte privé dans ces sources.
 
@@ -61,3 +61,8 @@ Cette livraison ajoute la configuration et son intégration à la navigation par
 ## Catalogue administratif — 2 octobre 2026
 
 Navigation partagée complétée par /admin/catalogue : statuts des sets, exclusions individuelles des cartes, recherche et pagination, permissions, révisions et journal. Migration 0005 et sources associées incluses. Adaptateurs du site hôte toujours nécessaires pour la base, le manifeste du catalogue et la navigation joueur. Aucun moteur de boosters ni défaut d’impression par exemplaire implémenté dans cette tranche.
+
+
+## Atelier de défauts — 2 octobre 2026
+
+/admin/defauts permet les essais visuels de découpe décalée, séparation des couleurs, encre manquante, taches et lignes, cumulables, avec recto/dos rotatifs et holo existant. Composition SVG depuis les scans d’origine, voisine du même set sur planche fictive, paramètres et graine reproductibles, export/import JSON validé. Permission defects.preview, sans attribution d’exemplaire ni écriture de données de jeu. Le fichier JSON contient les défauts et la sélection de cartes ; les aperçus de finition/holo restent séparés.

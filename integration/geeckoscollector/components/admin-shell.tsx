@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { ShieldCheck,Sparkles,Users,KeyRound,ScrollText,ArrowLeft,Settings2,Layers3 } from "lucide-react";
+import { ShieldCheck,Sparkles,Users,KeyRound,ScrollText,ArrowLeft,Settings2,Layers3,FlaskConical } from "lucide-react";
 import { PlayerChrome } from "@/components/player-ui";
 import { can,type AdminAccess,type AdminPermission } from "@/lib/admin-permissions";
 const links=[
+ {href:"/admin/defauts",label:"Atelier des défauts",permission:"defects.preview",Icon:FlaskConical},
  {href:"/admin/catalogue",label:"Sets et cartes",permission:"catalogue.read",Icon:Layers3},
  {href:"/admin/configuration",label:"Configuration du jeu",permission:"config.read",Icon:Settings2},
  {href:"/admin/holo",label:"Apparence des cartes",permission:"holo.read",Icon:Sparkles},
