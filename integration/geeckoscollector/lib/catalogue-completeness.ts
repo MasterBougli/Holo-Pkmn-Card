@@ -38,7 +38,8 @@ export async function getSetCompleteness(code:string,connection:Connection=db){
   })));
  }
  const incomplete=cards.filter(card=>card.missing.length);
- return {set,cards,incomplete:incomplete.length,complete:cards.length>0&&incomplete.length===0};
+ const absent=Math.max(0,set.totalCount-cards.length);
+ return {set,cards,incomplete:incomplete.length+absent,complete:cards.length>0&&absent===0&&incomplete.length===0};
 }
 export async function getPublicCardDetails(code:string,id:string){
  const set=await getCatalogueSetData(code);if(!set||!set.cards.some(card=>card.id===id))return null;

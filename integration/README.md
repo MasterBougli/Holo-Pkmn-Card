@@ -1,4 +1,4 @@
-# Intégration GeeckosCollector — 0.0.10
+# Intégration GeeckosCollector — 0.0.11
 
 Cette adaptation utilise Pokémon Cards CSS de Simon Goellner (@simeydotme), GPL-3.0.
 Sources amont : https://github.com/simeydotme/pokemon-cards-css
@@ -75,3 +75,19 @@ Navigation partagée complétée par /admin/catalogue : statuts des sets, exclus
 Migration 0006, corrections stockées dans catalogue_cards et fusionnées à la lecture avec le catalogue du site hôte. Adapter lib/db et fournir lib/catalogue-data.json ainsi que les fiches Web/CardDetails du site hôte : ces données de cartes ne sont pas distribuées dans ce fork. Exposer le dossier Cards via GAME_ASSETS_ROOT. L’ajout d’images utilise sharp, déjà fourni par Next.js dans le site hôte, avec taille limitée, validation et création exclusive sans écraser un scan existant. Les pages/API publiques du site hôte doivent appeler ces lecteurs asynchrones.
 
 Le contrôle d’éligibilité exclut aussi les sets incomplets. La recherche hebdomadaire et la validation manuelle des propositions d’import sont des fonctions prévues, pas encore fournies. Importer app/admin/admin.css pour le module éditorial. Les dépendances privées restent des adaptateurs : aucun secret, compte ou image de carte inclus.
+
+
+## Recherche et import du catalogue — 0.0.11
+
+Module /admin/imports, rapports persistants, propositions de correspondance et validation explicite par set. Migration 0007 à appliquer. Le service scripts/catalogue-worker.ts lit les pages publiques rendues de Pokécardex et les fiches françaises TCGdex ; aucune source privée incluse. Les checklists partielles empêchent la validation du set concerné. Une correspondance absente permet un import de scans avec fiches à compléter, jamais une activation automatique.
+
+Adaptateurs du site hôte : lib/db doit enregistrer importJobs, discoveryItems, importSchedule et importMappings ; fournir les dépendances pg, Drizzle et tsx, le catalogue existant et les contrôles d’authentification. La classe AdminError et le verrou d’autorisation sont désormais dans admin-authorisation, utilisable sans contexte HTTP. Les images originales sont conservées ; les ajouts sont normalisés par sharp, enregistrés sans écrasement et journalisés.
+
+Le service séparé utilise le Dockerfile fourni (Playwright 1.63.0, sharp 0.35.5), un utilisateur sans privilège et le profil seccomp de Playwright pour le sandbox Chromium. Monter le projet en lecture seule et seulement Cards en écriture ; exposer uniquement DATABASE_URL, ADMIN_USER_IDS, GAME_ASSETS_ROOT et NODE_ENV au service. Limiter mémoire/CPU et ne publier aucun port. Insérer le planning dans catalogue_import_schedule (id 1, jour 0-6, heure de Paris, next_run). Le service reprend les tâches interrompues, conserve les cartes déjà présentes et ne valide jamais un import de lui-même.
+
+
+### Ressources sur VPS partagé
+
+La configuration hôte fournie limite les workers de compilation à un et active webpackMemoryOptimizations. Compiler dans un conteneur dédié plafonné à 2048 Mo de RAM, 3072 Mo RAM+swap, CPU 1, avec NODE_OPTIONS=--max-old-space-size=768 ; arrêter le scanner pendant la compilation et le relancer après livraison. Le worker a une limite de 768 Mo sans swap supplémentaire et ferme la page source après chaque série. Ne pas lancer un build dans le conteneur web sans limites.
+
+Le cache Webpack est désactivé pour limiter la mémoire de compilation sur cet hôte. Le build utilise un worker isolé et un seul worker de génération de pages.
