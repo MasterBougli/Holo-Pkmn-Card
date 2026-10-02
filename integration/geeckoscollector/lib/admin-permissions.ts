@@ -5,7 +5,7 @@ export const permissionGroups = [
  {label:"Défauts des exemplaires",future:false,items:[["defects.preview","Utiliser l’atelier de simulation des défauts"]]},
  {label:"Configuration",future:false,items:[["config.read","Lire la configuration"],["config.edit","Modifier la configuration"]]},
  {label:"Disponibilité du catalogue",future:false,items:[["catalogue.read","Consulter le catalogue administrateur"],["catalogue.activate","Activer et désactiver des sets"]]},
- {label:"Cartes du catalogue",future:false,items:[["catalogue.edit","Autoriser ou exclure des cartes"]]},
+ {label:"Cartes du catalogue",future:false,items:[["catalogue.edit","Compléter les fiches et gérer les exclusions"]]},
  {label:"Création et imports",future:true,items:[["catalogue.create","Créer des sets et cartes"],["catalogue.delete","Supprimer des sets et cartes"],["catalogue.import","Lancer des imports"]]},
  {label:"Actualités",future:true,items:[["news.read","Voir les actualités administrateur"],["news.create","Créer une actualité"],["news.edit","Modifier une actualité"],["news.delete","Supprimer une actualité"],["news.publish","Publier et dépublier une actualité"]]},
  {label:"Événements",future:true,items:[["events.read","Voir les événements administrateur"],["events.create","Créer un événement"],["events.edit","Modifier un événement"],["events.delete","Supprimer un événement"],["events.publish","Publier et arrêter un événement"]]},

@@ -1,4 +1,4 @@
-# Intégration GeeckosCollector — 0.0.9
+# Intégration GeeckosCollector — 0.0.10
 
 Cette adaptation utilise Pokémon Cards CSS de Simon Goellner (@simeydotme), GPL-3.0.
 Sources amont : https://github.com/simeydotme/pokemon-cards-css
@@ -66,3 +66,12 @@ Navigation partagée complétée par /admin/catalogue : statuts des sets, exclus
 ## Atelier de défauts — 2 octobre 2026
 
 /admin/defauts permet les essais visuels de découpe décalée, séparation des couleurs, encre manquante, taches et lignes, cumulables, avec recto/dos rotatifs et holo existant. Composition SVG depuis les scans d’origine, voisine du même set sur planche fictive, paramètres et graine reproductibles, export/import JSON validé. Permission defects.preview, sans attribution d’exemplaire ni écriture de données de jeu. Le fichier JSON contient les défauts et la sélection de cartes ; les aperçus de finition/holo restent séparés.
+
+
+## Fiches de catalogue et activation — 0.0.10
+
+Éditeur /admin/catalogue/carte : nom, numéro, rareté, illustrateur et finitions, avec ajout d’image seulement si elle manque. Chaque carte doit disposer des six informations avant l’activation de son set ; une exclusion individuelle ne contourne pas ce contrôle. Une modification qui rend un set actif incomplet le désactive avec journal. Aucun set n’est activé automatiquement.
+
+Migration 0006, corrections stockées dans catalogue_cards et fusionnées à la lecture avec le catalogue du site hôte. Adapter lib/db et fournir lib/catalogue-data.json ainsi que les fiches Web/CardDetails du site hôte : ces données de cartes ne sont pas distribuées dans ce fork. Exposer le dossier Cards via GAME_ASSETS_ROOT. L’ajout d’images utilise sharp, déjà fourni par Next.js dans le site hôte, avec taille limitée, validation et création exclusive sans écraser un scan existant. Les pages/API publiques du site hôte doivent appeler ces lecteurs asynchrones.
+
+Le contrôle d’éligibilité exclut aussi les sets incomplets. La recherche hebdomadaire et la validation manuelle des propositions d’import sont des fonctions prévues, pas encore fournies. Importer app/admin/admin.css pour le module éditorial. Les dépendances privées restent des adaptateurs : aucun secret, compte ou image de carte inclus.

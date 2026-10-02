@@ -1,7 +1,8 @@
 import { and,eq,inArray } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { gameSets,cardAvailability } from "@/lib/catalogue-schema";
-import { catalogueSetData } from "@/lib/catalogue";
+import { getCatalogueSets } from "@/lib/catalogue";
+import { getSetCompleteness } from "@/lib/catalogue-completeness";
 
 // Future booster issuance must read this inside its own transaction.
 // This does not remove owned copies or change their resale price.
@@ -11,5 +12,7 @@ export async function getObtainableCatalogueCards(connection:Pick<typeof db,"sel
  if(!codes.length)return [];
  const exclusions=await connection.select({id:cardAvailability.cardId}).from(cardAvailability).where(and(eq(cardAvailability.excluded,true),inArray(cardAvailability.setCode,codes)));
  const allowed=new Set(codes),excluded=new Set(exclusions.map(row=>row.id));
- return catalogueSetData.filter(set=>allowed.has(set.code)).flatMap(set=>set.cards.filter(card=>!excluded.has(card.id)).map(card=>({...card,setCode:set.code})));
+ const eligible=[];
+ for(const set of await getCatalogueSets(connection)){if(allowed.has(set.code)&&(await getSetCompleteness(set.code,connection))?.complete)eligible.push(set);}
+ return eligible.flatMap(set=>set.cards.filter(card=>!excluded.has(card.id)).map(card=>({...card,setCode:set.code})));
 }

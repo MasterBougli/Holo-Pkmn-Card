@@ -3,13 +3,14 @@ import Link from "next/link";
 import { requireAdminPage } from "@/lib/admin-page";
 import { AdminShell } from "@/components/admin-shell";
 import { can } from "@/lib/admin-permissions";
-import { catalogueSetData,getCatalogueSetData } from "@/lib/catalogue";
+import { getCatalogueSets,getCatalogueSetData } from "@/lib/catalogue";
 import { getHoloSettings } from "@/lib/holo-settings";
 import { HoloEditor } from "@/components/holo-editor";
 export default async function HoloAdmin({searchParams}:{searchParams:Promise<{set?:string;card?:string}>}){
  const admin=await requireAdminPage("holo.read");
  const query=await searchParams;
- const set=getCatalogueSetData(query.set??"AOR")??catalogueSetData[0];
+ const catalogueSetData=await getCatalogueSets();
+ const set=await getCatalogueSetData(query.set??"AOR")??catalogueSetData[0];
  const card=set.cards.find(card=>card.id===query.card);
  const settings=await getHoloSettings(set.code,card?.id??"");
  return <AdminShell access={admin.access} active="/admin/holo" title="Finitions & reflets" description="Donne à chaque collection sa signature holographique.">

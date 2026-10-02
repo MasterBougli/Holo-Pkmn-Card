@@ -13,7 +13,7 @@ export async function PUT(request:Request){
  if(request.headers.get("origin")!==expected)return NextResponse.json({error:"Origine refusée."},{status:403});
  let body;try { body=await request.json(); } catch { return NextResponse.json({error:"Données invalides."},{status:400}); }
  if(!body||typeof body!=="object"||typeof body.setCode!=="string"||typeof body.cardId!=="string"||!isAppearanceOverrides(body.settings))return NextResponse.json({error:"Profil invalide."},{status:400});
- const set=getCatalogueSetData(body.setCode);
+ const set=await getCatalogueSetData(body.setCode);
  if(!set||(body.cardId&&!set.cards.some(card=>card.id===body.cardId)))return NextResponse.json({error:"Set ou carte introuvable."},{status:404});
  try{await db.transaction(async tx=>{
   await lockAdminAccess(tx,session.user.id,"holo.edit");
