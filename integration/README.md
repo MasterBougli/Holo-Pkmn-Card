@@ -1,4 +1,4 @@
-# Intégration GeeckosCollector — 0.0.11
+# Intégration GeeckosCollector — 0.0.12
 
 Cette adaptation utilise Pokémon Cards CSS de Simon Goellner (@simeydotme), GPL-3.0.
 Sources amont : https://github.com/simeydotme/pokemon-cards-css
@@ -91,3 +91,10 @@ Le service séparé utilise le Dockerfile fourni (Playwright 1.63.0, sharp 0.35.
 La configuration hôte fournie limite les workers de compilation à un et active webpackMemoryOptimizations. Compiler dans un conteneur dédié plafonné à 2048 Mo de RAM, 3072 Mo RAM+swap, CPU 1, avec NODE_OPTIONS=--max-old-space-size=768 ; arrêter le scanner pendant la compilation et le relancer après livraison. Le worker a une limite de 768 Mo sans swap supplémentaire et ferme la page source après chaque série. Ne pas lancer un build dans le conteneur web sans limites.
 
 Le cache Webpack est désactivé pour limiter la mémoire de compilation sur cet hôte. Le build utilise un worker isolé et un seul worker de génération de pages.
+
+
+## Lecture des numéros spéciaux — 0.0.12
+
+Le lecteur accepte les numéros avec ou sans dénominateur (SWSH001, AR1, H1), et les cartes sans numéro. Les listes sont dédupliquées par URL de scan. Les numéros imprimés uniques deviennent les numéros de catalogue ; lorsqu’ils se répètent ou manquent, les positions de scan servent d’identifiants. 30C conserve toujours ses positions pour distinguer ses rééditions. Le numéro imprimé reste disponible séparément dans le rapport. Le contrôle du nombre total de cartes reste obligatoire pour valider un import. Aucun scan existant n’est remplacé et aucun set n’est activé par cette correction.
+
+Les recherches interrompues conservent les listes complètes lues par cette version du lecteur. Elles relisent les listes incomplètes ou issues d’un ancien lecteur. Les propositions restent soumises à validation manuelle.

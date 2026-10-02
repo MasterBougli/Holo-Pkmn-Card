@@ -5,6 +5,7 @@ import { importJobs,discoveryItems,importMappings } from "@/lib/catalogue-import
 import { getCatalogueSets } from "@/lib/catalogue";
 import { readBaseDetails } from "@/lib/catalogue-completeness";
 import { normalName,normalNumber,codePattern,type SourceCard,type DiscoveryItem } from "@/lib/catalogue-import-types";
+import { sourceCardLabel,sourceCardNumbers } from "./catalogue-source-label";
 export async function publicJson(url:string){
  const response=await fetch(url,{signal:AbortSignal.timeout(20000),headers:{"User-Agent":"GeeckosCollector-catalogue/1.0"},redirect:"error"});
  if(!response.ok)throw new Error("TCGdex indisponible ("+response.status+").");
@@ -39,19 +40,19 @@ export async function readChecklist(page:any,code:string){
  await page.waitForSelector('h1',{timeout:20000});
  await page.waitForFunction((code:string)=>Array.from(document.querySelectorAll("img")).some(img=>(img.getAttribute("src")??"").includes("/sets/"+code+"/FR/")),code,{timeout:20000});
  await page.evaluate(()=>window.scrollTo(0,0));
- const cards=new Map<string,SourceCard>();let expected=0,steps=0,lastHeight=0;
+ const cards=new Map<string,Omit<SourceCard,"number">>();let expected=0,steps=0,lastHeight=0;
  while(steps++<250){
   const observed=await page.evaluate(()=>({text:document.body.innerText,images:Array.from(document.querySelectorAll('img')).map(img=>({src:img.getAttribute('src')??"",alt:img.alt})),height:document.documentElement.scrollHeight,y:window.scrollY}));
   expected=Number(observed.text.match(/(\d+)\s+cartes/i)?.[1]??0);
   for(const img of observed.images){
    const match=img.src.match(/^https:\/\/pokecardex-scans\.b-cdn\.net\/sets\/([A-Z0-9-]+)\/FR\/([a-zA-Z0-9_.-]+)\.jpg(?:\?.*)?$/);
-   const label=img.alt.match(/^(.*)\s+([^\s/]+)\/[^\s/]+$/);
-   if(match?.[1]===code&&label){const number=normalNumber(match[2]);cards.set(number,{number,name:label[1].trim(),scanId:match[2]});}
+   const label=sourceCardLabel(img.alt);
+   if(match?.[1]===code&&label)cards.set(match[2],{...label,scanId:match[2]});
   }
   if(observed.y+1800>=observed.height&&observed.height===lastHeight)break;
   lastHeight=observed.height;await page.evaluate(()=>window.scrollBy(0,1400));await page.waitForTimeout(500);
  }
- const values=[...cards.values()];return {cards:values,expected,complete:expected>0&&values.length===expected};
+ const values=sourceCardNumbers([...cards.values()],code);return {cards:values,expected,complete:expected>0&&values.length===expected};
 }
 export async function discoverCatalogue(jobId:string){
  const browser=await openSourceBrowser();
@@ -65,13 +66,19 @@ export async function discoverCatalogue(jobId:string){
   for(const set of local){const base=await readBaseDetails(set.code),first=Object.values(base)[0];const id=first?._local as {tcgdex_set_id?:string}|undefined;const tcg=(first?.set as {id?:string}|undefined)?.id??id?.tcgdex_set_id;if(tcg)known.set(tcg,set.code);}
   const special:Record<string,string>={"30C":"30th","LOR":"swsh11","SIT":"swsh12","PRSWSH":"swshp","PRSM":"smp","PRXY":"xyp","PRBW":"bwp","PRHS":"hgssp","PRDP":"dpp","PRNI":"np","PRWC":"basep"};
   await db.update(importJobs).set({total:sources.length,progress:0,summary:"Lecture des checklists publiques."}).where(eq(importJobs.id,jobId));
-  await db.delete(discoveryItems).where(eq(discoveryItems.reportId,jobId));
+  const previous=await db.select().from(discoveryItems).where(eq(discoveryItems.reportId,jobId));
+  const savedItems=new Map(previous.map(row=>[row.sourceCode,row.data]));
   let errors=0;
   for(const [index,source] of sources.entries()){
+   const cached=savedItems.get(source.code);
+   if(cached?.complete&&cached.readerVersion===2){
+    await db.update(importJobs).set({progress:index+1,summary:source.code+" · reprise · "+(index+1)+" / "+sources.length+" checklists"}).where(eq(importJobs.id,jobId));
+    continue;
+   }
    const explicit=saved.find(m=>m.sourceCode===source.code),matches=tcgSets.filter(s=>normalName(s.name)===normalName(source.name));
    const tcgdexId=explicit?.tcgdexId??special[source.code]??(matches.length===1?matches[0].id:"");
    const localCode=explicit?.localCode??known.get(tcgdexId)??(source.code==="LOR"?"LOR-MAIN":source.code==="SIT"?"SIT-MAIN":source.code);
-   const item:DiscoveryItem={sourceCode:source.code,name:source.name,localCode,tcgdexId,cards:[],missing:0,existing:0,expected:0,complete:false,issues:tcgError?[tcgError]:[],mapping:explicit?"Correspondance validée":tcgdexId?"Correspondance proposée, à valider":"Sans correspondance TCGdex"};
+   const item:DiscoveryItem={readerVersion:2,sourceCode:source.code,name:source.name,localCode,tcgdexId,cards:[],missing:0,existing:0,expected:0,complete:false,issues:tcgError?[tcgError]:[],mapping:explicit?"Correspondance validée":tcgdexId?"Correspondance proposée, à valider":"Sans correspondance TCGdex"};
    const page=await sourcePage(browser);
    try{
     Object.assign(item,await readChecklist(page,source.code));
@@ -82,7 +89,7 @@ export async function discoverCatalogue(jobId:string){
     if(!tcgdexId)item.issues.push("Informations TCGdex absentes : les fiches devront être complétées manuellement.");
    }catch(error){item.issues.push(error instanceof Error?error.message:"Lecture impossible.");}finally{await page.close();}
    if(!item.complete)errors++;
-   await db.insert(discoveryItems).values({reportId:jobId,sourceCode:source.code,data:item});
+   await db.insert(discoveryItems).values({reportId:jobId,sourceCode:source.code,data:item}).onConflictDoUpdate({target:[discoveryItems.reportId,discoveryItems.sourceCode],set:{data:item}});
    await db.update(importJobs).set({progress:index+1,summary:source.code+" · "+(index+1)+" / "+sources.length+" checklists"}).where(eq(importJobs.id,jobId));
    await new Promise(resolve=>setTimeout(resolve,300));
   }
