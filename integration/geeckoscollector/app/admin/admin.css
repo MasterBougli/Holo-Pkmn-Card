@@ -183,3 +183,7 @@ body[data-contrast=renforce] .admin-config-summary>div,body[data-contrast=renfor
 .admin-catalogue-error { border-style:dashed; }
 @media(max-width:850px) { .admin-catalogue-sets { grid-template-columns:1fr; } }
 @media(max-width:560px) { .admin-catalogue-set>button,.admin-catalogue-card>button,.admin-catalogue-set-state>button { width:100%; justify-content:center; } }
+
+.admin-catalogue-library h2,.admin-catalogue-detail h2 { font-size:1.35em; font-weight:800; line-height:1.4; margin-bottom:16px; }
+.admin-catalogue-library .quiet-button,.admin-catalogue-detail .quiet-button { font-size:.9em; }
+.admin-catalogue-library :disabled,.admin-catalogue-detail :disabled { opacity:.65; cursor:not-allowed; }
