@@ -1,4 +1,4 @@
-# Intégration GeeckosCollector — 0.0.7
+# Intégration GeeckosCollector — 0.0.8
 
 Cette adaptation utilise Pokémon Cards CSS de Simon Goellner (@simeydotme), GPL-3.0.
 Sources amont : https://github.com/simeydotme/pokemon-cards-css
@@ -45,7 +45,7 @@ Navigation partagée, rôles personnalisés, attributions multiples, délégatio
 
 Les imports du site hôte auth, db, auth-schema, player-ui et catalogue restent des interfaces à adapter. Aucun secret ni compte réel n’est inclus. Les droits des futurs modules sont réservés, sans outil correspondant à cette version.
 
-## Configuration du site hôte — 0.0.7
+## Configuration du site hôte — 0.0.8
 
 La navigation de l’atelier propose le module Configuration, avec les permissions config.read et config.edit. Le journal commun affiche ses changements. Migration 0004 : maintenance désactivée et inscriptions autorisées au départ. Aucun accès ou compte privé dans ces sources.
 
@@ -56,3 +56,8 @@ Importer app/site-availability.css. Pour les notices publiques, placer SiteAvail
 Le site hôte conserve sa configuration Better Auth. Ajouter un hook databaseHooks.user.create.before qui relit getSiteSettings, lance APIError("FORBIDDEN", {code:"REGISTRATIONS_CLOSED", message:config.registrationMessage}) lorsque registrationsEnabled est faux, puis retourne {data:user}. Ce hook intercepte la création e-mail et OAuth, sans bloquer les connexions à un compte existant. Les pages d’inscription et connexion doivent être dynamiques. Documentation du hook : https://better-auth.com/docs/concepts/database#database-hooks.
 
 Cette livraison ajoute la configuration et son intégration à la navigation partagée de l’atelier. Les styles et moteurs holo eux-mêmes sont inchangés. Adapter les dépendances auth, db, auth-schema, player-ui et catalogue au projet hôte.
+
+
+## Catalogue administratif — 2 octobre 2026
+
+Navigation partagée complétée par /admin/catalogue : statuts des sets, exclusions individuelles des cartes, recherche et pagination, permissions, révisions et journal. Migration 0005 et sources associées incluses. Adaptateurs du site hôte toujours nécessaires pour la base, le manifeste du catalogue et la navigation joueur. Aucun moteur de boosters ni défaut d’impression par exemplaire implémenté dans cette tranche.
