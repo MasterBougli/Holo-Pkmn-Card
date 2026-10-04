@@ -134,7 +134,7 @@ body[data-motion="reduites"] .booster-opening-dialog *,body[data-motion="desacti
 body[data-motion="reduites"] .booster-opening-dialog *,body[data-motion="desactivees"] .booster-opening-dialog *, .booster-dialog-body.booster-dialog-body[data-skip="true"] *{animation:none!important;transition:none!important}
 
 /* Keep discovery controls visible on laptop screens. */
-.packet-seam-slider input{padding:0;border:0;border-radius:0;background:transparent;box-shadow:none}
+.booster-opening-dialog .ritual-pack-stage .packet-seam-slider input[type=range]{padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;min-height:44px}
 .opening-alternative{display:inline-flex;align-items:center;gap:10px}
 .booster-dialog-body[data-step="reveal"]{padding-block:16px}
 .reveal-heading{min-height:55px}.reveal-heading h3{margin:6px 0 10px}
