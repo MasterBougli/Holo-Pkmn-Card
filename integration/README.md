@@ -1,4 +1,4 @@
-# Intégration GeeckosCollector — 0.0.19
+# Intégration GeeckosCollector — 0.0.20
 
 Cette adaptation utilise Pokémon Cards CSS de Simon Goellner (@simeydotme), GPL-3.0.
 Sources amont : https://github.com/simeydotme/pokemon-cards-css
@@ -134,3 +134,6 @@ Administration > Boosters et cadeaux > Révélation des cartes rares : activatio
 
 ## 0.0.19 — Gestion des raretés
 Création, renommage et suppression avec remplacement. Correspondances d’import conservées ; compositions, prix généraux et couleurs actuels réattribués. Historique conservé. Migration 0011 et initialisation des libellés existants. Sources et documentation dans integration/geeckoscollector.
+
+## 0.0.20 — Cohérence de l’interface
+Boutons dans le flux, texte visible sur mobile, menu admin repliable, modales centrées avec scroll intérieur. Grands textes, polices, clair/sombre, contraste et monochrome. Sauvegarde des préférences corrigée et sérialisée ; raisons des cadeaux bloqués explicites. Voir docs/UI_AUDIT.md.

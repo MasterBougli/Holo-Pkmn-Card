@@ -20,8 +20,9 @@ export async function boosterSetup(code:string){
  const [set]=await db.select().from(gameSets).where(eq(gameSets.code,report.set.code)).limit(1);
  const exclusions=await db.select().from(cardAvailability).where(and(eq(cardAvailability.setCode,report.set.code),eq(cardAvailability.excluded,true)));
  const excluded=new Set(exclusions.map(c=>c.cardId));
- return {setCode:report.set.code,name:report.set.name,active:set.active,complete:report.complete,incomplete:report.incomplete,
- rarities:[...new Set(report.cards.filter(c=>!c.missing.length&&!excluded.has(c.id)).map(c=>c.rarity))].sort((a,b)=>a.localeCompare(b,"fr")),composition:config?.composition??null,revision:config?.revision??0};
+ const rarities=[...new Set(report.cards.filter(c=>!c.missing.length&&!excluded.has(c.id)).map(c=>c.rarity))].sort((a,b)=>a.localeCompare(b,"fr"));
+ const grantIssues=[...(!set.active?["Le set est inactif."]:[]),...(!report.complete?[report.incomplete+" fiche(s) restent à compléter."]:[]),...(!config?["Aucune composition de booster enregistrée."]:!validComposition(config.composition)?["La composition enregistrée est invalide."]:config.composition.slots.some(slot=>slot.choices.some(choice=>!rarities.includes(choice.rarity)))?["Une rareté de la composition ne possède aucune carte éligible."]:[])];
+ return {setCode:report.set.code,name:report.set.name,active:set.active,complete:report.complete,incomplete:report.incomplete,rarities,grantIssues,composition:config?.composition??null,revision:config?.revision??0};
 }
 async function eligible(tx:AdminTransaction,code:string,composition:BoosterComposition,requireActive=true){
  const [set]=await tx.select().from(gameSets).where(eq(gameSets.code,code)).limit(1);

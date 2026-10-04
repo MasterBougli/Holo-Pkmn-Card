@@ -33,3 +33,7 @@ Administration > Boosters et cadeaux > Révélation des cartes rares : activatio
 
 ## Raretés administrables — 0.0.19
 La liste commune se gère dans Administration > Raretés. Renommer ou remplacer une rareté met à jour les compositions actuelles, tarifs généraux et couleurs ; les anciens exemplaires et boosters attribués gardent leurs informations figées. Voir docs/RARETES.md.
+
+## Vérification des cadeaux — 0.0.20
+Attribution au joueur et au set sélectionnés, relance sans doublon et refus (quantités invalides, permissions, destinataire non vérifié, set inactif/incomplet, composition absente ou rareté sans carte éligible) vérifiés sur le véritable service dans une transaction annulée. Aucun cadeau durable créé par le contrôle. Le formulaire affiche désormais les raisons du blocage et le nom/code du set. Une soumission réussie dans l’interface et une ouverture persistante restent à essayer avec une composition validée et un set actif.
+

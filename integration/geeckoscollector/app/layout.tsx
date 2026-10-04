@@ -10,6 +10,7 @@ import "@fontsource/opendyslexic/700.css";
 import "./globals.css";
 import "./card-holo.css";
 import "./collection-game.css";
+import "./ui-layout.css";
 import { AccessibilityGate } from "@/components/player-ui";
 
 export const metadata: Metadata = {
