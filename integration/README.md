@@ -1,4 +1,4 @@
-# Intégration GeeckosCollector — 0.0.15
+# Intégration GeeckosCollector — 0.0.16
 
 Cette adaptation utilise Pokémon Cards CSS de Simon Goellner (@simeydotme), GPL-3.0.
 Sources amont : https://github.com/simeydotme/pokemon-cards-css
@@ -117,3 +117,8 @@ La livraison 0.0.15 limite aussi Webpack à un module simultané et RAYON_NUM_TH
 
 
 Version 0.0.15 : réglage carte par carte ouvert par défaut, tarifs par finition et monnaie, accès direct depuis la fiche de carte.
+
+
+## Version 0.0.16
+
+Finition unique de carte, choix manuel des fiches ambiguës ; composition et probabilités de boosters par set, cadeaux administratifs journalisés, tirage serveur atomique et idempotent, cartes possédées avec défauts persistants, ouverture animée accessible et classeur joueur. Migration 0009 requise après sauvegarde privée. Aucun taux ni composition activé automatiquement.

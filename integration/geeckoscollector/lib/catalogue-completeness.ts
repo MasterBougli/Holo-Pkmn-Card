@@ -4,7 +4,7 @@ import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { catalogueCards } from "@/lib/catalogue-schema";
 import { getCatalogueSetData } from "@/lib/catalogue";
-import { availableFinishes,missingMetadata,type CardMetadataFields,type CardMetadataView } from "@/lib/card-metadata";
+import { availableFinishes,singleFinish,missingMetadata,type CardMetadataFields,type CardMetadataView } from "@/lib/card-metadata";
 type Connection=Pick<typeof db,"select">;
 type Detail={name?:string;localId?:string;rarity?:string;illustrator?:string;variants?:Record<string,boolean>;[key:string]:unknown};
 export async function readBaseDetails(code:string):Promise<Record<string,Detail>>{
@@ -32,7 +32,7 @@ export async function getSetCompleteness(code:string,connection:Connection=db){
    const detail=base[card.id]??{},row=overrides.get(card.id);
    const raw=row?{name:row.name,localId:row.localId,rarity:row.rarity,illustrator:row.illustrator,finishes:row.finishes}:
     {name:detail.name??card.name,localId:detail.localId??card.localId,rarity:detail.rarity??card.rarity,illustrator:detail.illustrator??"",finishes:availableFinishes.filter(finish=>finish!=="fullart"&&detail.variants?.[finish]===true)};
-   const fields:CardMetadataFields={...raw,finishes:raw.finishes.filter(finish=>availableFinishes.includes(finish))};
+   const fields:CardMetadataFields={...raw,finishes:singleFinish(raw.finishes)};
    const imageAvailable=await hasCardImage(set.code,card.id);
    return {...fields,id:card.id,setCode:set.code,setName:set.name,revision:row?.revision??0,imageAvailable,missing:missingMetadata(fields,imageAvailable),source:row?.source??"tcgdex"};
   })));
@@ -41,13 +41,13 @@ export async function getSetCompleteness(code:string,connection:Connection=db){
  const absent=Math.max(0,set.totalCount-cards.length);
  return {set,cards,incomplete:incomplete.length+absent,complete:cards.length>0&&absent===0&&incomplete.length===0};
 }
-export async function getPublicCardDetails(code:string,id:string){
- const set=await getCatalogueSetData(code);if(!set||!set.cards.some(card=>card.id===id))return null;
- const [base,rows]=await Promise.all([readBaseDetails(set.code),db.select().from(catalogueCards).where(eq(catalogueCards.id,id)).limit(1)]);
+export async function getPublicCardDetails(code:string,id:string,connection:Connection=db){
+ const set=await getCatalogueSetData(code,connection);if(!set||!set.cards.some(card=>card.id===id))return null;
+ const [base,rows]=await Promise.all([readBaseDetails(set.code),connection.select().from(catalogueCards).where(eq(catalogueCards.id,id)).limit(1)]);
  const row=rows[0],brief=set.cards.find(card=>card.id===id)!;
  if(!base[id]&&!row)return null;
  const {_local,...details}=base[id]??{};
  void _local;
  const {_local:privateLocal,...stored}=row?.details??{};void privateLocal;
- return {...details,...stored,set:{name:set.name,cardCount:{official:set.officialCount,total:set.totalCount}},name:row?.name??details.name??brief.name,localId:row?.localId??details.localId??brief.localId,rarity:row?.rarity??details.rarity??brief.rarity,illustrator:row?.illustrator??details.illustrator,availableFinishes:row?.finishes??availableFinishes.filter(finish=>finish!=="fullart"&&(details.variants as Record<string,boolean>|undefined)?.[finish]===true)};
+ return {...details,...stored,set:{name:set.name,cardCount:{official:set.officialCount,total:set.totalCount}},name:row?.name??details.name??brief.name,localId:row?.localId??details.localId??brief.localId,rarity:row?.rarity??details.rarity??brief.rarity,illustrator:row?.illustrator??details.illustrator,availableFinishes:singleFinish(row?.finishes??availableFinishes.filter(finish=>finish!=="fullart"&&(details.variants as Record<string,boolean>|undefined)?.[finish]===true))};
 }

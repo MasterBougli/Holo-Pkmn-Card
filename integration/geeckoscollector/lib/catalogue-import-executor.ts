@@ -9,7 +9,7 @@ import { catalogueCards,gameSets } from "@/lib/catalogue-schema";
 import { adminAudit } from "@/lib/admin-schema";
 import { AdminError,lockAdminAccess } from "@/lib/admin-authorisation";
 import { getCatalogueSetData } from "@/lib/catalogue";
-import { availableFinishes } from "@/lib/card-metadata";
+import { availableFinishes,singleFinish } from "@/lib/card-metadata";
 import { normalNumber,normalName,codePattern,tcgdexPattern } from "@/lib/catalogue-import-types";
 import { publicJson } from "@/lib/catalogue-discovery";
 import { validSourceScanId } from "./catalogue-source-scan";
@@ -66,7 +66,7 @@ export async function executeCatalogueImport(jobId:string){
     }
     const id=request.localCode+"-"+(/^\d+$/.test(card.number)?card.number.padStart(3,"0"):card.number);
     if(!/^[a-zA-Z0-9_.-]{1,100}$/.test(id))throw new Error("Numéro non pris en charge.");
-    const fields={name:card.name.slice(0,160),localId:card.number.slice(0,160),rarity:typeof details.rarity==="string"?details.rarity.slice(0,160):"",illustrator:typeof details.illustrator==="string"?details.illustrator.slice(0,160):"",finishes:availableFinishes.filter(finish=>finish!=="fullart"&&details.variants?.[finish]===true)};
+    const fields={name:card.name.slice(0,160),localId:card.number.slice(0,160),rarity:typeof details.rarity==="string"?details.rarity.slice(0,160):"",illustrator:typeof details.illustrator==="string"?details.illustrator.slice(0,160):"",finishes:singleFinish(availableFinishes.filter(finish=>finish!=="fullart"&&details.variants?.[finish]===true))};
     const image=await scanImage(request.sourceCode,card.scanId);
     await db.transaction(async tx=>{
      await lockAdminAccess(tx,actorId,"catalogue.import");

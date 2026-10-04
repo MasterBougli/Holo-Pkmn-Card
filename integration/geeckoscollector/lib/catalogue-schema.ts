@@ -1,4 +1,5 @@
-import { boolean, jsonb, date, index, integer, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
+import { check, boolean, jsonb, date, index, integer, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
 export const gameSets = pgTable("game_sets", {
   code: varchar("code", { length: 12 }).primaryKey(),
@@ -35,4 +36,4 @@ export const catalogueCards=pgTable("catalogue_cards",{
  revision:integer("revision").notNull().default(1),
  updatedBy:text("updated_by").notNull(),
  updatedAt:timestamp("updated_at",{withTimezone:true}).notNull().defaultNow(),
-},table=>[index("catalogue_cards_set_idx").on(table.setCode)]);
+},table=>[index("catalogue_cards_set_idx").on(table.setCode),check("catalogue_card_single_finish",sql`jsonb_typeof(${table.finishes}) = 'array' and jsonb_array_length(${table.finishes}) <= 1 and (jsonb_array_length(${table.finishes}) = 0 or ${table.finishes}->>0 in ('normal','holo','reverse','fullart'))`)]);

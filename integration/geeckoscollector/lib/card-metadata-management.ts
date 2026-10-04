@@ -9,7 +9,7 @@ type Actor={id:string;username?:string|null;name:string};
 function fields(v:CardMetadataFields):CardMetadataFields{return {name:v.name.trim(),localId:v.localId.trim(),rarity:v.rarity.trim(),illustrator:v.illustrator.trim(),finishes:[...v.finishes].sort()};}
 export async function saveCardMetadata(actor:Actor,body:Record<string,unknown>){
  const revision=body.revision,code=body.setCode,id=body.id;
- if(typeof code!=="string"||typeof id!=="string"||!Number.isSafeInteger(revision)||Number(revision)<0||!validMetadata(body))throw new AdminError("Fiche invalide : textes de 160 caractères maximum et finitions connues.",400);
+ if(typeof code!=="string"||typeof id!=="string"||!Number.isSafeInteger(revision)||Number(revision)<0||!validMetadata(body))throw new AdminError("Fiche invalide : textes de 160 caractères maximum et une seule finition connue.",400);
  const next=fields(body);
  await db.transaction(async tx=>{
   await lockAdminAccess(tx,actor.id,"catalogue.edit");

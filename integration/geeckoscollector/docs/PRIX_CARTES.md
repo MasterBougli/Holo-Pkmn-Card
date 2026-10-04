@@ -52,3 +52,8 @@ Compilation sur ce VPS : conteneur 2304 Mo RAM, 3584 Mo RAM+swap, CPU 1, coeur r
 ## Accès carte par carte
 
 Le module ouvre directement « Par carte ». Sélectionner le set et la carte, saisir ses prix en pièces et gemmes pour chaque finition, puis enregistrer. Chaque carte conserve ses propres montants ; un champ vide reprend le tarif général de sa rareté. La fiche de carte propose aussi « Régler les prix de cette carte » avec la permission economy.read.
+
+
+## Mise à jour : finition unique et boosters
+
+Une seule finition par carte ; les fiches ambiguës restent à définir manuellement. Tarifs individuels limités à cette finition. Module de composition par set, cadeaux et ouverture décrit dans BOOSTERS.md. Les mentions anciennes de versions multiples et de boosters à venir ci-dessus constituent le contexte historique.

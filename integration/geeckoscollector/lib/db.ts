@@ -1,3 +1,4 @@
+import * as boosterSchema from "@/lib/booster-schema";
 import * as importSchema from "@/lib/catalogue-import-schema";
 import { cardPriceRules } from "@/lib/card-price-schema";
 import { drizzle } from "drizzle-orm/node-postgres";
@@ -17,4 +18,4 @@ const globalForDb = globalThis as unknown as { pool?: Pool };
 const pool = globalForDb.pool ?? new Pool({ connectionString, max: 10 });
 if (process.env.NODE_ENV !== "production") globalForDb.pool = pool;
 
-export const db = drizzle(pool, { schema: { cardPriceRules, ...importSchema,...authSchema, ...adminSchema, siteSettings, playerPreferences, gameSets,cardAvailability,catalogueCards, holoProfiles,holoProfileHistory } });
+export const db = drizzle(pool, { schema: { ...boosterSchema,cardPriceRules, ...importSchema,...authSchema, ...adminSchema, siteSettings, playerPreferences, gameSets,cardAvailability,catalogueCards, holoProfiles,holoProfileHistory } });
