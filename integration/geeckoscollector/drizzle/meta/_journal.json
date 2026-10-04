@@ -71,6 +71,13 @@
       "when": 1791133200000,
       "tag": "0009_boosters_and_single_finish",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1791140000000,
+      "tag": "0010_booster_reveal_styles",
+      "breakpoints": true
     }
   ]
 }

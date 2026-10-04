@@ -7,11 +7,12 @@ import type { BoosterPack,BoosterComposition,OwnedCard } from "@/lib/booster-typ
 import { finishLabels } from "@/lib/card-metadata";
 import { activeDefectNames } from "@/lib/card-defects";
 import { OwnedCardVisual } from "./owned-card-visual";
+import { revealStyle,type RevealStyles } from "@/lib/booster-reveal";
 import { BoosterPacket } from "./booster-packet";
 type Inventory={packs:BoosterPack[];total:number;unopened:number};
 type Odds={name:string;setCode:string;composition:BoosterComposition|null;active:boolean;complete:boolean};
 type Step="ready"|"charging"|"opening"|"reveal"|"summary";
-export function BoosterRoom({preview,previewArtwork}:{preview?:OwnedCard[];previewArtwork?:string|null}){
+export function BoosterRoom({preview,previewArtwork,revealStyles={}}:{preview?:OwnedCard[];previewArtwork?:string|null;revealStyles?:RevealStyles}){
  const [inventory,setInventory]=useState<Inventory|null>(null),[page,setPage]=useState(0),[loading,setLoading]=useState(false),[error,setError]=useState("");
  const [pack,setPack]=useState<BoosterPack|null>(null),[odds,setOdds]=useState<Odds|null>(null),[cards,setCards]=useState<OwnedCard[]>([]),[step,setStep]=useState<Step>("ready");
  const [index,setIndex]=useState(0),[faceUp,setFaceUp]=useState(false),[review,setReview]=useState<number|null>(null),[revealed,setRevealed]=useState(0),[flipping,setFlipping]=useState(false);
@@ -55,6 +56,7 @@ export function BoosterRoom({preview,previewArtwork}:{preview?:OwnedCard[];previ
  }
  function scrollCards(direction:number){const rail=carousel.current;rail?.scrollBy({left:direction*Math.max(180,rail.clientWidth*.65),behavior:reduced()?"auto":"smooth"});}
  const displayIndex=review??index,current=cards[displayIndex],shown=review!==null||faceUp,totalCards=odds?.composition?.slots.reduce((n,s)=>n+s.count,0)??0;
+ const effect=current?revealStyle(current.rarity,revealStyles):null,special=shown&&!!effect?.enabled;
  const canOpen=!!odds&&(!!pack?.openedAt||!!odds.composition&&odds.active&&odds.complete);
  return <>
  <section className="booster-reserve"><Gift aria-hidden="true"/><div><strong>{preview?"Démonstration de l’animation":(inventory?.unopened??0)+" booster(s) prêt(s) à ouvrir"}</strong><p>{preview?"Cartes d’exemple fixes : aucun tirage réel, aucun booster consommé, aucune carte attribuée.":"Retrouve aussi tes ouvertures précédentes : leur contenu reste sauvegardé."}</p></div><Link className="button game-secondary" href="/collection">Voir ma collection <ArrowRight size={18}/></Link></section>
@@ -82,8 +84,8 @@ export function BoosterRoom({preview,previewArtwork}:{preview?:OwnedCard[];previ
  </section>}
  {step==="reveal"&&current&&<section className="booster-reveal">
  <div className="reveal-heading" aria-live="polite"><p className="reveal-counter">{review!==null?"CARTE RECONSULTÉE":"CARTE "+(index+1)+" / "+cards.length}</p><h3>{shown?current.name:"Une carte attend d’être révélée"}</h3></div>
- <div className="reveal-stage" data-finish={shown?current.finish:"hidden"}>
- <div className="reveal-aura" aria-hidden="true"/>
+ <div className="reveal-stage" data-finish={shown?current.finish:"hidden"} data-special={special} data-celebrate={special&&review===null} style={special?{"--rarity-color":effect!.color} as CSSProperties:undefined}>
+ <div className="reveal-aura" aria-hidden="true"/>{special&&<div className="rarity-reveal-rays" key={displayIndex} aria-hidden="true">{Array.from({length:8},(_,i)=><i key={i} style={{"--ray":i*45+"deg"} as CSSProperties}/>)}</div>}
  <button ref={mainCard} type="button" className={"turn-card "+(shown?"is-face-up":"")} aria-label={review!==null?"Revenir à la carte en cours":!faceUp?"Révéler la carte "+(index+1):index+1===cards.length?"Voir le récapitulatif":"Passer à la carte suivante"} aria-describedby={titleId+"-card-help"} aria-disabled={flipping} onClick={activateCard}>
  <span className="turn-card-inner" key={displayIndex}><span className="turn-card-back" aria-hidden={shown}><img src="/media/Cards/card-back.png" alt="Dos de carte" draggable={false}/></span><span className="turn-card-front" aria-hidden={!shown}><OwnedCardVisual card={current}/></span></span>
  </button></div>
