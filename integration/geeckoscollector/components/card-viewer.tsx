@@ -6,9 +6,11 @@ import { X } from "lucide-react";
 import { CardThickness } from "@/components/card-thickness";
 import { HoloSurface } from "@/components/holo-surface";
 import { resolveCardAppearance,type AppearanceOverrides,type CardFinish,type HoloEffect } from "@/lib/card-appearance";
+import { availableFinishes,finishLabels,type AvailableFinish } from "@/lib/card-metadata";
+import type { ResolvedPrice } from "@/lib/card-prices";
 import type { CatalogueCard } from "@/lib/catalogue";
 
-type CardDetails = { illustrator?:string; rarity?:string; set?:{cardCount?:{official?:number}}; variants?:{holo?:boolean;reverse?:boolean;normal?:boolean} };
+type CardDetails = { availableFinishes?:AvailableFinish[]; illustrator?:string; rarity?:string; set?:{cardCount?:{official?:number}}; variants?:{holo?:boolean;reverse?:boolean;normal?:boolean} };
 const finishNames={normal:"Normale",reverse:"Reverse",fullart:"Full art"};
 const effectNames={none:"Sans effet",classic:"Classique",illusion:"Illusion",glitter:"Glitter · paillettes",rainbow:"Rainbow",galaxy:"Cosmos · galaxy"};
 export function CardViewer({card,setCode,setName,children,previewProfiles}:{card:CatalogueCard;setCode:string;setName:string;children:React.ReactNode;previewProfiles?:AppearanceOverrides}) {
@@ -22,6 +24,8 @@ export function CardViewer({card,setCode,setName,children,previewProfiles}:{card
   const [effect,setEffect]=useState<HoloEffect>("none");
   const [profiles,setProfiles]=useState<AppearanceOverrides>({});
   const [details,setDetails]=useState<CardDetails|null>(null);
+  const [prices,setPrices]=useState<Partial<Record<AvailableFinish,ResolvedPrice>>>({});
+  const [priceFinish,setPriceFinish]=useState<AvailableFinish>("normal");
   const [error,setError]=useState("");
   const [loading,setLoading]=useState(false);
   const [frontMissing,setFrontMissing]=useState(false);
@@ -32,11 +36,11 @@ export function CardViewer({card,setCode,setName,children,previewProfiles}:{card
     document.body.style.overflow="hidden";
     const controller=new AbortController();
     dialog.current?.showModal();
-    setLoading(true);setError("");setDetails(null);setRotation({x:0,y:0});setFinish("normal");setEffect("none");
+    setPrices({});setPriceFinish("normal");setLoading(true);setError("");setDetails(null);setRotation({x:0,y:0});setFinish("normal");setEffect("none");
     fetch("/api/catalogue/"+encodeURIComponent(setCode)+"/"+encodeURIComponent(card.id),{signal:controller.signal})
       .then(async response=>{if(!response.ok)throw new Error();return response.json()})
        .then(data=>{
-        setDetails(data.details);
+        setDetails(data.details);setPrices(data.prices??{});
         const next=previewProfiles??data.appearance??{};
         setProfiles(next);
         const start:CardFinish=/full.?art|illustration rare/i.test(data.details?.rarity??"")?"fullart":"normal";
@@ -50,6 +54,10 @@ export function CardViewer({card,setCode,setName,children,previewProfiles}:{card
     if(!drag.current)return;
     setRotation({x:Math.max(-40,Math.min(40,drag.current.rx-(event.clientY-drag.current.y)*0.2)),y:drag.current.ry+(event.clientX-drag.current.x)*0.8});
   }
+  const saleVersions=(details?.availableFinishes??[]).filter(version=>availableFinishes.includes(version));
+  const saleVersion=saleVersions.includes(priceFinish)?priceFinish:saleVersions[0];
+  const salePrice=saleVersion?prices[saleVersion]:undefined;
+  const showPrice=(value:number|null|undefined)=>value==null?"À définir":value.toLocaleString("fr-FR");
   const profile={...resolveCardAppearance(finish,profiles),effect};
   const backVisible=Math.cos(rotation.y*Math.PI/180)<0;
   return <>
@@ -80,8 +88,9 @@ export function CardViewer({card,setCode,setName,children,previewProfiles}:{card
           <div><dt>Nom</dt><dd>{card.name}</dd></div>
           <div><dt>Rareté</dt><dd>{details?.rarity||card.rarity||"Non renseignée"}</dd></div>
           <div><dt>Illustrateur</dt><dd>{details?.illustrator|| (loading?"Chargement…":"Non renseigné")}</dd></div>
-          <div><dt>Revente en pièces</dt><dd>À définir</dd></div>
-          <div><dt>Revente en gemmes</dt><dd>À définir</dd></div>
+          {saleVersions.length>0&&<div className="card-summary-wide"><dt><label htmlFor={uid+"-sale-version"}>Tarifs de la version</label></dt><dd><select id={uid+"-sale-version"} style={{maxWidth:"100%",minHeight:44,padding:"8px 12px",font:"inherit",color:"var(--ink)",background:"var(--card)",border:"1px solid var(--line)",borderRadius:10}} value={saleVersion} onChange={event=>setPriceFinish(event.target.value as AvailableFinish)}>{saleVersions.map(version=><option key={version} value={version}>{finishLabels[version]}</option>)}</select></dd></div>}
+          <div><dt>Revente en pièces</dt><dd>{showPrice(salePrice?.coins)}</dd></div>
+          <div><dt>Revente en gemmes</dt><dd>{showPrice(salePrice?.gems)}</dd></div>
         </dl>
         {error&&<p role="status">{error}</p>}
       </section></div>

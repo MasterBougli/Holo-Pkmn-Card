@@ -21,6 +21,7 @@ export type CatalogueSetData = {
 };
 
 const data = catalogue as { sets: CatalogueSetData[] };
+function sortedCards(cards:CatalogueCard[]){return cards.sort((a,b)=>a.localId.localeCompare(b.localId,"fr",{numeric:true})||a.id.localeCompare(b.id,"fr",{numeric:true}));}
 
 type Connection=Pick<typeof db,"select">;
 export async function getCatalogueSets(connection:Connection=db):Promise<CatalogueSetData[]>{
@@ -29,7 +30,7 @@ export async function getCatalogueSets(connection:Connection=db):Promise<Catalog
   const base=data.sets.find(item=>item.code===set.code);
   const cards=new Map((base?.cards??[]).map(card=>[card.id,card]));
   for(const row of overrides.filter(row=>row.setCode===set.code))cards.set(row.id,{id:row.id,name:row.name,localId:row.localId,rarity:row.rarity});
-  return {code:set.code,name:set.name,series:set.seriesName,releaseDate:set.releaseDate??"",officialCount:set.officialCardCount,totalCount:set.totalCardCount,cards:[...cards.values()]};
+  return {code:set.code,name:set.name,series:set.seriesName,releaseDate:set.releaseDate??"",officialCount:set.officialCardCount,totalCount:set.totalCardCount,cards:sortedCards([...cards.values()])};
  }).sort((a,b)=>a.code.localeCompare(b.code));
 }
 export async function getCatalogueSetData(code:string,connection:Connection=db):Promise<CatalogueSetData|undefined>{
@@ -38,5 +39,5 @@ export async function getCatalogueSetData(code:string,connection:Connection=db):
  const overrides=await connection.select().from(catalogueCards).where(eq(catalogueCards.setCode,set.code));
  const cards=new Map((data.sets.find(item=>item.code===set.code)?.cards??[]).map(card=>[card.id,card]));
  for(const row of overrides)cards.set(row.id,{id:row.id,name:row.name,localId:row.localId,rarity:row.rarity});
- return {code:set.code,name:set.name,series:set.seriesName,releaseDate:set.releaseDate??"",officialCount:set.officialCardCount,totalCount:set.totalCardCount,cards:[...cards.values()]};
+ return {code:set.code,name:set.name,series:set.seriesName,releaseDate:set.releaseDate??"",officialCount:set.officialCardCount,totalCount:set.totalCardCount,cards:sortedCards([...cards.values()])};
 }

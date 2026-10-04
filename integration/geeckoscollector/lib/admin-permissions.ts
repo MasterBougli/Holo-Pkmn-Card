@@ -10,7 +10,8 @@ export const permissionGroups = [
  {label:"Création du catalogue",future:true,items:[["catalogue.create","Créer des sets et cartes"],["catalogue.delete","Supprimer des sets et cartes"]]},
  {label:"Actualités",future:true,items:[["news.read","Voir les actualités administrateur"],["news.create","Créer une actualité"],["news.edit","Modifier une actualité"],["news.delete","Supprimer une actualité"],["news.publish","Publier et dépublier une actualité"]]},
  {label:"Événements",future:true,items:[["events.read","Voir les événements administrateur"],["events.create","Créer un événement"],["events.edit","Modifier un événement"],["events.delete","Supprimer un événement"],["events.publish","Publier et arrêter un événement"]]},
- {label:"Économie et boosters",future:true,items:[["economy.read","Voir les tarifs"],["economy.edit","Modifier les tarifs"],["boosters.read","Voir les boosters"],["boosters.create","Créer un booster"],["boosters.edit","Modifier un booster"],["boosters.delete","Supprimer un booster"]]},
+ {label:"Tarifs des cartes",future:false,items:[["economy.read","Voir les tarifs"],["economy.edit","Modifier les tarifs"]]},
+ {label:"Boosters",future:true,items:[["boosters.read","Voir les boosters"],["boosters.create","Créer un booster"],["boosters.edit","Modifier un booster"],["boosters.delete","Supprimer un booster"]]},
  {label:"Modération",future:true,items:[["users.edit","Modifier les profils joueurs"],["users.moderate","Modérer les comptes"]]},
 ] as const;
 export const permissionKeys = permissionGroups.flatMap(group=>group.items.map(([key])=>key));

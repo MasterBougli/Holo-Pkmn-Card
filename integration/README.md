@@ -1,4 +1,4 @@
-# Intégration GeeckosCollector — 0.0.13
+# Intégration GeeckosCollector — 0.0.14
 
 Cette adaptation utilise Pokémon Cards CSS de Simon Goellner (@simeydotme), GPL-3.0.
 Sources amont : https://github.com/simeydotme/pokemon-cards-css
@@ -88,7 +88,7 @@ Le service séparé utilise le Dockerfile fourni (Playwright 1.63.0, sharp 0.35.
 
 ### Ressources sur VPS partagé
 
-La configuration hôte fournie limite les workers de compilation à un et active webpackMemoryOptimizations. Compiler dans un conteneur dédié plafonné à 2048 Mo de RAM, 3072 Mo RAM+swap, CPU 1, avec NODE_OPTIONS=--max-old-space-size=768 ; arrêter le scanner pendant la compilation et le relancer après livraison. Le worker a une limite de 768 Mo sans swap supplémentaire et ferme la page source après chaque série. Ne pas lancer un build dans le conteneur web sans limites.
+La configuration hôte fournie limite les workers de compilation à un et active webpackMemoryOptimizations. Compiler dans un conteneur dédié plafonné à 2304 Mo de RAM, 3584 Mo RAM+swap, CPU 1, avec NODE_OPTIONS=--max-old-space-size=640 ; arrêter le scanner pendant la compilation et le relancer après livraison. Le worker a une limite de 768 Mo sans swap supplémentaire et ferme la page source après chaque série. Ne pas lancer un build dans le conteneur web sans limites.
 
 Le cache Webpack est désactivé pour limiter la mémoire de compilation sur cet hôte. Le build utilise un worker isolé et un seul worker de génération de pages.
 
@@ -105,3 +105,12 @@ Les recherches interrompues conservent les listes complètes lues par cette vers
 Reconnaissance des scans français avec un sous-dossier de variante (exemple PRZP/FR/149/1.jpg), partagée avec la validation du téléchargement. Domaine source inchangé, un sous-dossier maximum, segments alphanumériques sans chemin relatif ni encodage de séparateur. Les positions finales sont utilisées si elles sont uniques ; sinon la référence complète distingue les variantes. Une collision de numéros bloque la validation de la liste. Le lecteur passe en révision 3 pour relire les résultats issus de l’ancienne règle. Aucun import ou activation automatique.
 
 Une liste complète lue en révision 2 reste réutilisable pendant la reprise du même rapport : la correction ne change pas les références sans sous-dossier. Les listes partielles sont relues par la révision 3. La date d’origine du rapport reste inchangée, donc sa durée de validité ne se prolonge pas.
+
+
+## Tarifs de revente — 0.0.14
+
+Migration 0008 pour les tarifs indépendants en pièces et gemmes par rareté/finition, avec exceptions par carte. Champ vide : À définir pour un tarif général, héritage par monnaie pour une exception ; zéro est conservé. Permissions economy.read/economy.edit, origine contrôlée, droits relus sous verrou commun, révisions anti-conflit et journal avant/après. Les règles effacées conservent leur révision pour éviter une réapparition silencieuse d'anciens brouillons.
+
+Fiche publique : choix parmi les versions réellement disponibles ; tarifs fournis séparément des aperçus holo. Les défauts ne changent pas ces valeurs. Aucun moteur de vente, solde ou achat réel ajouté ; aucun montant injecté automatiquement.
+
+La livraison 0.0.14 limite aussi Webpack à un module simultané et RAYON_NUM_THREADS=1, avec NEXT_TELEMETRY_DISABLED=1. Réserver un coeur au build et arrêter uniquement le scanner pendant la compilation. Surveiller les réserves de RAM et de swap du VPS ; aucun déploiement en cas de compilation incomplète.
