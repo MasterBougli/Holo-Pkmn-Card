@@ -1,4 +1,4 @@
-# Intégration GeeckosCollector — 0.0.16
+# Intégration GeeckosCollector — 0.0.17
 
 Cette adaptation utilise Pokémon Cards CSS de Simon Goellner (@simeydotme), GPL-3.0.
 Sources amont : https://github.com/simeydotme/pokemon-cards-css
@@ -122,3 +122,8 @@ Version 0.0.15 : réglage carte par carte ouvert par défaut, tarifs par finitio
 ## Version 0.0.16
 
 Finition unique de carte, choix manuel des fiches ambiguës ; composition et probabilités de boosters par set, cadeaux administratifs journalisés, tirage serveur atomique et idempotent, cartes possédées avec défauts persistants, ouverture animée accessible et classeur joueur. Migration 0009 requise après sauvegarde privée. Aucun taux ni composition activé automatiquement.
+
+## Ouverture 0.0.17
+Visuel choisi parmi les fichiers réellement présents dans Web/Boosters/CODE, de façon stable par booster. Un fichier absent est indiqué sans utiliser un visuel d'un autre set.
+Découpe par glissement sur la bande supérieure ; clavier flèches/Fin et bouton Ouvrir sans glisser. Après sauvegarde serveur, bande détachée, paquet qui tombe, éventail de dos de cartes et particules. Premier clic : retournement 3D ; second clic : prochaine carte face cachée. Les découvertes restent consultables dans le carrousel horizontal inférieur.
+Modal centrée, en-tête et pied séparés du défilement interne. Réduction des animations et accès clavier conservés. Aucune migration supplémentaire.

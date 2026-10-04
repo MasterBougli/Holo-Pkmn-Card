@@ -3,7 +3,7 @@ import type { DefectScenario } from "./card-defects";
 export type BoosterSlot={count:number;choices:{rarity:string;weight:number}[]};
 export type BoosterComposition={slots:BoosterSlot[];defectPpm:number};
 export type OwnedCard={id:string;cardId:string;setCode:string;setName:string;name:string;localId:string;max:number;rarity:string;illustrator:string;finish:AvailableFinish;isNew:boolean;defects:DefectScenario|null;position:number};
-export type BoosterPack={id:string;setCode:string;setName:string;openedAt:string|null;createdAt:string};
+export type BoosterPack={id:string;setCode:string;setName:string;artwork?:string|null;openedAt:string|null;createdAt:string};
 export function validComposition(value:unknown):value is BoosterComposition{
  if(!value||typeof value!=="object")return false;
  const v=value as BoosterComposition;

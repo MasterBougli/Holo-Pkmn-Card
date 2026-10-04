@@ -1,3 +1,4 @@
+import { getBoosterArtwork } from "./booster-artwork";
 import { randomInt,randomUUID } from "node:crypto";
 import { and,eq,isNull,sql,desc,ilike,or,count } from "drizzle-orm";
 import { db } from "./db";
@@ -76,7 +77,8 @@ export async function playerInventory(userId:string,page=0){
  const packs=await db.select({id:playerBoosters.id,setCode:playerBoosters.setCode,setName:gameSets.name,openedAt:playerBoosters.openedAt,createdAt:playerBoosters.createdAt}).from(playerBoosters).innerJoin(gameSets,eq(gameSets.code,playerBoosters.setCode)).where(eq(playerBoosters.userId,userId)).orderBy(desc(playerBoosters.createdAt)).limit(24).offset(page*24);
  const [total]=await db.select({value:count()}).from(playerBoosters).where(eq(playerBoosters.userId,userId));
  const [unopened]=await db.select({value:count()}).from(playerBoosters).where(and(eq(playerBoosters.userId,userId),isNull(playerBoosters.openedAt)));
- return {packs,total:total.value,unopened:unopened.value};
+ const illustrated=await Promise.all(packs.map(async pack=>({...pack,artwork:await getBoosterArtwork(pack.setCode,pack.id)})));
+ return {packs:illustrated,total:total.value,unopened:unopened.value};
 }
 export async function playerCollection(userId:string,page=0){
  const rows=await db.select({snapshot:ownedCards.snapshot}).from(ownedCards).where(eq(ownedCards.userId,userId)).orderBy(desc(ownedCards.createdAt),desc(ownedCards.id)).limit(24).offset(page*24);
