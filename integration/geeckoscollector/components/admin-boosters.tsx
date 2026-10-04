@@ -11,6 +11,7 @@ export function AdminBoosters({sets,canEdit,canGrant}:{sets:{code:string;name:st
  const [code,setCode]=useState(sets[0]?.code??""),[setup,setSetup]=useState<Setup|null>(null),[draft,setDraft]=useState<BoosterComposition>(empty);
  const [busy,setBusy]=useState(false),[loading,setLoading]=useState(false),[error,setError]=useState(""),[notice,setNotice]=useState(""),[reload,setReload]=useState(0);
  const [query,setQuery]=useState(""),[players,setPlayers]=useState<Player[]>([]),[playerId,setPlayerId]=useState(""),[quantity,setQuantity]=useState(1),[reason,setReason]=useState("");
+ const [giftCode,setGiftCode]=useState(""),[giftSetup,setGiftSetup]=useState<Setup|null>(null),[giftLoading,setGiftLoading]=useState(false),[giftLoadError,setGiftLoadError]=useState(""),[giftError,setGiftError]=useState(""),[giftNotice,setGiftNotice]=useState("");
  const [history,setHistory]=useState<History[]>([]),requestId=useRef<string|null>(null);
  const dirty=JSON.stringify(draft)!==JSON.stringify(setup?.composition??empty);
  async function response(url:string,options?:RequestInit){const r=await fetch(url,{cache:"no-store",...options}),data=await r.json();if(!r.ok)throw Error(data.error??"Opération impossible.");return data;}
@@ -19,17 +20,49 @@ export function AdminBoosters({sets,canEdit,canGrant}:{sets:{code:string;name:st
   response("/api/admin/boosters?set="+encodeURIComponent(code),{signal:abort.signal}).then(data=>{if(!abort.signal.aborted){setSetup(data);setDraft(data.composition??{slots:[],defectPpm:0});}}).catch(e=>{if(!abort.signal.aborted)setError(e.message);}).finally(()=>{if(!abort.signal.aborted)setLoading(false);});
   return()=>abort.abort();
  },[code,reload]);
+ useEffect(()=>{
+  const abort=new AbortController();setGiftSetup(null);setGiftLoadError("");setGiftError("");setGiftNotice("");requestId.current=null;
+  if(!giftCode){setGiftLoading(false);return()=>abort.abort();}
+  setGiftLoading(true);
+  response("/api/admin/boosters?set="+encodeURIComponent(giftCode),{signal:abort.signal}).then(data=>{if(!abort.signal.aborted)setGiftSetup(data);}).catch(e=>{if(!abort.signal.aborted)setGiftLoadError(e.message);}).finally(()=>{if(!abort.signal.aborted)setGiftLoading(false);});
+  return()=>abort.abort();
+ },[giftCode,reload]);
+ const giftIssues=[
+  ...(!giftCode?["Choisis le set des boosters à offrir."]:giftLoading?["Vérification du set en cours…"]:giftLoadError?[giftLoadError]:(!giftSetup||giftSetup.setCode!==giftCode)?["Le set n’a pas encore pu être vérifié."]:giftSetup.grantIssues),
+  ...(!playerId?["Sélectionne un joueur après la recherche de son pseudo."]:[]),
+  ...(!Number.isInteger(quantity)||quantity<1||quantity>100?["La quantité doit être un nombre entier entre 1 et 100."]:[]),
+  ...(reason.trim().length<3||reason.length>200?["Ajoute un motif de 3 à 200 caractères pour le journal."]:[])
+ ];
  async function loadHistory(){try{setHistory((await response("/api/admin/boosters?history=1")).history);}catch(e){setError((e as Error).message);}}
  useEffect(()=>{void loadHistory();},[]);
  function editSlot(index:number,slot:BoosterSlot){setDraft(d=>({...d,slots:d.slots.map((s,i)=>i===index?slot:s)}));setNotice("");}
- async function save(){setBusy(true);setError("");setNotice("");try{const data=await response("/api/admin/boosters",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({setCode:code,revision:setup?.revision??0,composition:draft})});setSetup(data);setDraft(data.composition);setNotice("Composition enregistrée pour tous les boosters de ce set.");}catch(e){setError((e as Error).message);}finally{setBusy(false);}}
+ async function save(){setBusy(true);setError("");setNotice("");try{const data=await response("/api/admin/boosters",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({setCode:code,revision:setup?.revision??0,composition:draft})});setSetup(data);setDraft(data.composition);if(giftCode===code)setGiftSetup(data);setNotice("Composition enregistrée pour tous les boosters de ce set.");}catch(e){setError((e as Error).message);}finally{setBusy(false);}}
  async function search(){setBusy(true);setError("");try{setPlayers((await response("/api/admin/boosters?players="+encodeURIComponent(query))).players);setPlayerId("");requestId.current=null;}catch(e){setError((e as Error).message);}finally{setBusy(false);}}
  async function grant(){
-  const recipient=players.find(p=>p.id===playerId);if(!window.confirm("Offrir "+quantity+" booster(s) du set "+code+" à "+(recipient?.pseudo??recipient?.username??"ce joueur")+" ?"))return;
-  setBusy(true);setError("");setNotice("");requestId.current??=crypto.randomUUID();
-  try{await response("/api/admin/boosters",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({requestId:requestId.current,setCode:code,userId:playerId,quantity,reason})});setNotice(quantity+" booster(s) attribué(s).");requestId.current=null;setReason("");await loadHistory();}catch(e){setError((e as Error).message);}finally{setBusy(false);}
+  if(busy||giftIssues.length||!giftSetup?.composition)return;
+  const recipient=players.find(p=>p.id===playerId);if(!window.confirm("Offrir "+quantity+" booster(s) du set "+giftCode+" à "+(recipient?.pseudo??recipient?.username??"ce joueur")+" ?"))return;
+  setBusy(true);setGiftError("");setGiftNotice("");requestId.current??=crypto.randomUUID();
+  try{await response("/api/admin/boosters",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({requestId:requestId.current,setCode:giftCode,userId:playerId,quantity,reason})});setGiftNotice(quantity+" booster(s) du set "+giftCode+" attribué(s).");requestId.current=null;setReason("");await loadHistory();}catch(e){setGiftError((e as Error).message);}finally{setBusy(false);}
  }
  return <>
+
+ {canGrant&&<section className="admin-settings-panel booster-grant" id="cadeaux" aria-labelledby="gift-title">
+ <h2 id="gift-title"><Gift aria-hidden="true"/>Offrir des boosters</h2>
+ <p>Choisis ici le set, le joueur et la quantité. Les boosters seront ajoutés directement à son compte.</p>
+ <label htmlFor="gift-set">Set des boosters à offrir</label><select id="gift-set" value={giftCode} disabled={busy} onChange={e=>{setGiftCode(e.target.value);requestId.current=null;}}><option value="">Sélectionner un set</option>{sets.map(s=><option key={s.code} value={s.code}>{s.code} · {s.name}{s.active?"":" · Inactif"}</option>)}</select>
+ {giftSetup&&<p>Set choisi : <strong>{giftSetup.name} ({giftCode})</strong></p>}
+ {giftCode&&giftSetup&&giftSetup.grantIssues.length>0&&<div className="admin-grant-readiness"><strong>Ce set ne peut pas encore être offert</strong><ul>{giftSetup.grantIssues.map(issue=><li key={issue}>{issue}</li>)}</ul><Link className="quiet-button" href="/admin/catalogue">Compléter et activer le set</Link><p>La composition se règle dans la section « Composition du booster » ci-dessous, après avoir sélectionné ce même set dans « Set à configurer ».</p></div>}
+ <label htmlFor="gift-search">Rechercher un pseudo</label><input id="gift-search" value={query} minLength={2} maxLength={64} onChange={e=>setQuery(e.target.value)}/>
+ <button type="button" className="quiet-button" disabled={busy||query.trim().length<2} onClick={search}>Rechercher</button>
+ <label htmlFor="gift-player">Joueur</label><select id="gift-player" value={playerId} disabled={busy} onChange={e=>{setPlayerId(e.target.value);requestId.current=null;}}><option value="">Sélectionner un joueur</option>{players.map(p=><option key={p.id} value={p.id}>{p.pseudo??p.username}</option>)}</select>
+ {players.length===0&&query.length>=2&&<p>La recherche concerne les joueurs dont l’adresse e-mail est vérifiée.</p>}
+ <label htmlFor="gift-quantity">Quantité</label><input id="gift-quantity" type="number" min={1} max={100} value={quantity} onChange={e=>{setQuantity(Number(e.target.value));requestId.current=null;}}/>
+ <label htmlFor="gift-reason">Motif (obligatoire)</label><input id="gift-reason" value={reason} minLength={3} maxLength={200} aria-describedby="gift-reason-help" onChange={e=>{setReason(e.target.value);requestId.current=null;}}/><p id="gift-reason-help">3 à 200 caractères, pour garder une trace de l’attribution.</p>
+ <div id="gift-validation" aria-live="polite">{giftIssues.length>0?<><strong>Pour pouvoir valider :</strong><ul>{giftIssues.map(issue=><li key={issue}>{issue}</li>)}</ul></>:<p>Prêt à offrir {quantity} booster(s) {giftCode} à {players.find(p=>p.id===playerId)?.pseudo??players.find(p=>p.id===playerId)?.username}.</p>}</div>
+ <button type="button" className="button game-primary" aria-describedby="gift-validation" disabled={busy||giftIssues.length>0||!giftSetup?.composition} onClick={grant}>{busy?"Opération en cours…":"Offrir les boosters"}</button>
+ {giftError&&<p className="admin-catalogue-error" role="alert">{giftError}</p>}
+ {giftNotice&&<p className="admin-catalogue-notice" role="status">{giftNotice}</p>}
+ </section>}
  <section className="admin-settings-panel booster-admin-select"><label>Set à configurer<select value={code} disabled={busy} onChange={e=>{if(dirty&&!window.confirm("Abandonner la composition non enregistrée ?"))return;setCode(e.target.value);requestId.current=null;}}>{sets.map(s=><option key={s.code} value={s.code}>{s.code} · {s.name}</option>)}</select></label><p>Chaque visuel de booster utilise cette même composition. La composition actuelle est utilisée au moment de l’ouverture ; elle est ensuite conservée dans l’historique du booster.</p></section>
  {loading&&<p role="status">Chargement du set…</p>}
  {setup&&<><section className="admin-target-panel"><h2>{setup.name}</h2><Link className="quiet-button" href={"/admin/boosters/apercu?set="+encodeURIComponent(code)}>Voir l’animation sans attribuer de cartes</Link><p>{setup.active?"Set actif":"Set inactif"} · {setup.complete?"Toutes les fiches sont complètes":setup.incomplete+" fiche(s) à compléter"}</p><p>Les cadeaux et les ouvertures nécessitent un set actif, complet et une carte éligible pour chaque rareté choisie.</p></section>
@@ -43,8 +76,7 @@ export function AdminBoosters({sets,canEdit,canGrant}:{sets:{code:string;name:st
  <button type="button" className="quiet-button" disabled={draft.slots.length>=20||!setup.rarities.length} onClick={()=>setDraft(d=>({...d,slots:[...d.slots,{count:1,choices:[{rarity:setup.rarities[0],weight:1}]}]}))}><Plus size={18}/>Ajouter un groupe</button>
  <label className="booster-defects-label">Chance d’un défaut, par million de cartes<input type="number" min={0} max={1000} value={draft.defectPpm} onChange={e=>setDraft(d=>({...d,defectPpm:Number(e.target.value)}))}/></label><p>0 désactive les défauts. 1 signifie 1 chance sur 1 000 000 ; maximum 1 000 (0,1 %). Un second défaut utilise à nouveau cette probabilité : le cumul est encore plus rare. Leur valeur de revente reste inchangée.</p></fieldset>
  <div className="admin-save-bar"><strong>{draft.slots.reduce((n,s)=>n+s.count,0)} carte(s) · {dirty?"Brouillon non enregistré":"Composition à jour"}</strong><div className="admin-save-actions"><button type="button" className="quiet-button" disabled={busy} onClick={()=>{if(!dirty||window.confirm("Recharger et abandonner le brouillon ?"))setReload(r=>r+1);}}><RefreshCw size={18}/>Recharger</button><button className="button game-primary" disabled={!canEdit||busy||!dirty||!draft.slots.length}><Save size={18}/>Enregistrer</button></div></div></form>
- {canGrant&&<section className="admin-settings-panel booster-grant" id="cadeaux"><h2><Gift aria-hidden="true"/>Offrir des boosters</h2><p>Set choisi : <strong>{setup.name} ({code})</strong>. Les cadeaux vont directement dans le compte du joueur.</p>{setup.grantIssues.length>0&&<div className="admin-grant-readiness"><strong>Ce set ne peut pas encore être offert</strong><ul>{setup.grantIssues.map(issue=><li key={issue}>{issue}</li>)}</ul><Link className="quiet-button" href="/admin/catalogue">Compléter et activer le set</Link></div>}<label>Rechercher un pseudo<input value={query} minLength={2} maxLength={64} onChange={e=>setQuery(e.target.value)}/></label><button type="button" className="quiet-button" disabled={busy||query.trim().length<2} onClick={search}>Rechercher</button><label>Joueur<select value={playerId} disabled={busy} onChange={e=>{setPlayerId(e.target.value);requestId.current=null;}}><option value="">Sélectionner un joueur</option>{players.map(p=><option key={p.id} value={p.id}>{p.pseudo??p.username}</option>)}</select></label>{players.length===0&&query.length>=2&&<p>La recherche concerne les joueurs dont l’adresse e-mail est vérifiée.</p>}
- <label>Quantité<input type="number" min={1} max={100} value={quantity} onChange={e=>{setQuantity(Number(e.target.value));requestId.current=null;}}/></label><label>Motif<input value={reason} maxLength={200} onChange={e=>{setReason(e.target.value);requestId.current=null;}}/></label><button type="button" className="button game-primary" disabled={busy||dirty||!playerId||setup.grantIssues.length>0||!setup.composition||!Number.isInteger(quantity)||quantity<1||quantity>100||reason.trim().length<3} onClick={grant}>Offrir les boosters</button><p>Enregistre d’abord les éventuelles modifications de composition.</p></section>}</>}
+ </>}
  {error&&<p className="admin-catalogue-error" role="alert">{error}</p>}{notice&&<p className="admin-catalogue-notice" role="status">{notice}</p>}
  <section className="admin-settings-panel"><h2>Dernières attributions</h2>{!history.length?<p>Aucun cadeau enregistré.</p>:<ul className="booster-grant-history">{history.map(h=><li key={h.id}><strong>{h.pseudo??h.username} · {h.quantity} × {h.setCode}</strong><span>{h.reason} · {new Date(h.createdAt).toLocaleString("fr-FR")}</span></li>)}</ul>}</section>
  </>;

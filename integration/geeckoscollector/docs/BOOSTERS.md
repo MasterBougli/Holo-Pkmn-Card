@@ -37,3 +37,7 @@ La liste commune se gère dans Administration > Raretés. Renommer ou remplacer 
 ## Vérification des cadeaux — 0.0.20
 Attribution au joueur et au set sélectionnés, relance sans doublon et refus (quantités invalides, permissions, destinataire non vérifié, set inactif/incomplet, composition absente ou rareté sans carte éligible) vérifiés sur le véritable service dans une transaction annulée. Aucun cadeau durable créé par le contrôle. Le formulaire affiche désormais les raisons du blocage et le nom/code du set. Une soumission réussie dans l’interface et une ouverture persistante restent à essayer avec une composition validée et un set actif.
 
+
+## Cadeaux — 0.0.21
+Le panneau Offrir des boosters est placé en premier. Il possède son propre choix de set, indépendant de Set à configurer et du brouillon de composition. Le motif est explicitement obligatoire (3 à 200 caractères). Les conditions manquantes sont listées près du bouton ; changements rapides de set attendent sa vérification. Une erreur d’envoi permet une relance avec le même identifiant, sans double attribution. L’activation, la complétude et la composition restent contrôlées côté serveur.
+

@@ -1,4 +1,4 @@
-# Intégration GeeckosCollector — 0.0.20
+# Intégration GeeckosCollector — 0.0.21
 
 Cette adaptation utilise Pokémon Cards CSS de Simon Goellner (@simeydotme), GPL-3.0.
 Sources amont : https://github.com/simeydotme/pokemon-cards-css
@@ -137,3 +137,7 @@ Création, renommage et suppression avec remplacement. Correspondances d’impor
 
 ## 0.0.20 — Cohérence de l’interface
 Boutons dans le flux, texte visible sur mobile, menu admin repliable, modales centrées avec scroll intérieur. Grands textes, polices, clair/sombre, contraste et monochrome. Sauvegarde des préférences corrigée et sérialisée ; raisons des cadeaux bloqués explicites. Voir docs/UI_AUDIT.md.
+
+## 0.0.21 — Formulaire de cadeaux
+Choix du set directement dans le panneau cadeaux, placé avant la composition ; sélection indépendante du brouillon de composition. Motif obligatoire et toutes les conditions de validation expliqués près du bouton. Protections métier conservées.
+
