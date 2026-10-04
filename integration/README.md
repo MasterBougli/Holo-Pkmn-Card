@@ -1,4 +1,4 @@
-# Intégration GeeckosCollector — 0.0.14
+# Intégration GeeckosCollector — 0.0.15
 
 Cette adaptation utilise Pokémon Cards CSS de Simon Goellner (@simeydotme), GPL-3.0.
 Sources amont : https://github.com/simeydotme/pokemon-cards-css
@@ -107,10 +107,13 @@ Reconnaissance des scans français avec un sous-dossier de variante (exemple PRZ
 Une liste complète lue en révision 2 reste réutilisable pendant la reprise du même rapport : la correction ne change pas les références sans sous-dossier. Les listes partielles sont relues par la révision 3. La date d’origine du rapport reste inchangée, donc sa durée de validité ne se prolonge pas.
 
 
-## Tarifs de revente — 0.0.14
+## Tarifs de revente — 0.0.15
 
 Migration 0008 pour les tarifs indépendants en pièces et gemmes par rareté/finition, avec exceptions par carte. Champ vide : À définir pour un tarif général, héritage par monnaie pour une exception ; zéro est conservé. Permissions economy.read/economy.edit, origine contrôlée, droits relus sous verrou commun, révisions anti-conflit et journal avant/après. Les règles effacées conservent leur révision pour éviter une réapparition silencieuse d'anciens brouillons.
 
 Fiche publique : choix parmi les versions réellement disponibles ; tarifs fournis séparément des aperçus holo. Les défauts ne changent pas ces valeurs. Aucun moteur de vente, solde ou achat réel ajouté ; aucun montant injecté automatiquement.
 
-La livraison 0.0.14 limite aussi Webpack à un module simultané et RAYON_NUM_THREADS=1, avec NEXT_TELEMETRY_DISABLED=1. Réserver un coeur au build et arrêter uniquement le scanner pendant la compilation. Surveiller les réserves de RAM et de swap du VPS ; aucun déploiement en cas de compilation incomplète.
+La livraison 0.0.15 limite aussi Webpack à un module simultané et RAYON_NUM_THREADS=1, avec NEXT_TELEMETRY_DISABLED=1. Réserver un coeur au build et arrêter uniquement le scanner pendant la compilation. Surveiller les réserves de RAM et de swap du VPS ; aucun déploiement en cas de compilation incomplète.
+
+
+Version 0.0.15 : réglage carte par carte ouvert par défaut, tarifs par finition et monnaie, accès direct depuis la fiche de carte.
