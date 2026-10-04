@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { ShieldCheck,Sparkles,Users,KeyRound,ScrollText,ArrowLeft,Settings2,Layers3,FlaskConical,Download,Coins } from "lucide-react";
+import { ShieldCheck,Sparkles,Users,KeyRound,ScrollText,ArrowLeft,Settings2,Layers3,FlaskConical,Download,Coins,Tags } from "lucide-react";
 import { PlayerChrome } from "@/components/player-ui";
 import { can,type AdminAccess,type AdminPermission } from "@/lib/admin-permissions";
 const links=[
+ {href:"/admin/raretes",label:"Raretés",permission:"rarities.read",Icon:Tags},
  {href:"/admin/boosters",label:"Boosters et cadeaux",permission:"boosters.read",Icon:Layers3},
  {href:"/admin/prix",label:"Tarifs des cartes",permission:"economy.read",Icon:Coins},
  {href:"/admin/imports",label:"Découvertes et imports",permission:"catalogue.read",Icon:Download},

@@ -1,4 +1,4 @@
-# Intégration GeeckosCollector — 0.0.18
+# Intégration GeeckosCollector — 0.0.19
 
 Cette adaptation utilise Pokémon Cards CSS de Simon Goellner (@simeydotme), GPL-3.0.
 Sources amont : https://github.com/simeydotme/pokemon-cards-css
@@ -131,3 +131,6 @@ Modal centrée, en-tête et pied séparés du défilement interne. Réduction de
 ## Révélations 0.0.18
 Le paquet reste immobile et disparaît par fondu ; la bande de découpe utilise une petite languette rectangulaire, une couture discrète et une zone tactile de 44 px. Les cartes au-delà de Commune/Peu commune ont un contour coloré, un halo et des rayons brefs après retournement. Aucun indice de rareté avant révélation. Les effets sont indépendants des finitions holo et du tirage.
 Administration > Boosters et cadeaux > Révélation des cartes rares : activation et couleur hexadécimale par libellé de rareté ; valeurs initiales déterministes, inconnues désactivées tant que non reconnues/configurées. Commune/Peu commune restent sans effet spécial. Permissions boosters.read/edit, contrôle d'origine, validation, verrou, révision indépendante et journal avant/après. Migration 0010 ajoute uniquement deux colonnes dans site_settings. En mouvement réduit, contour fixe et aucun rayon animé.
+
+## 0.0.19 — Gestion des raretés
+Création, renommage et suppression avec remplacement. Correspondances d’import conservées ; compositions, prix généraux et couleurs actuels réattribués. Historique conservé. Migration 0011 et initialisation des libellés existants. Sources et documentation dans integration/geeckoscollector.

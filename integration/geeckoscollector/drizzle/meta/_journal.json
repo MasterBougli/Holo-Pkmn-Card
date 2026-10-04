@@ -78,6 +78,13 @@
       "when": 1791140000000,
       "tag": "0010_booster_reveal_styles",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1791143600000,
+      "tag": "0011_game_rarities",
+      "breakpoints": true
     }
   ]
 }

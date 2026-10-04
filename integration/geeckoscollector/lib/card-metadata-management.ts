@@ -1,3 +1,4 @@
+import { getGameRarities,canonicalRarity,findRarity } from "./rarity-catalogue";
 import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { catalogueCards,gameSets } from "@/lib/catalogue-schema";
@@ -13,6 +14,7 @@ export async function saveCardMetadata(actor:Actor,body:Record<string,unknown>){
  const next=fields(body);
  await db.transaction(async tx=>{
   await lockAdminAccess(tx,actor.id,"catalogue.edit");
+  const rarities=await getGameRarities(tx);if(next.rarity&&!findRarity(next.rarity,rarities))throw new AdminError("Choisis une rareté existante dans la liste du jeu.",409);next.rarity=canonicalRarity(next.rarity,rarities);
   const report=await getSetCompleteness(code,tx),previous=report?.cards.find(card=>card.id===id);
   if(!report||!previous)throw new AdminError("Carte introuvable.",404);
   if(previous.revision!==revision)throw new AdminError("La fiche a changé. Recharge avant de continuer.",409);

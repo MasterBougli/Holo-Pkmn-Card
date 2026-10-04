@@ -1,6 +1,7 @@
 export const permissionGroups = [
  {label:"Administration",future:false,items:[["admin.access","Ouvrir l’administration"],["audit.read","Consulter le journal"]]},
  {label:"Rôles et comptes",future:false,items:[["roles.read","Voir les rôles"],["roles.create","Créer un rôle"],["roles.edit","Modifier les rôles et permissions"],["roles.delete","Archiver un rôle"],["roles.assign","Attribuer et retirer des rôles"],["users.read","Consulter les comptes"]]},
+ {label:"Raretés",future:false,items:[["rarities.read","Consulter les raretés"],["rarities.create","Créer une rareté"],["rarities.edit","Modifier les raretés"],["rarities.delete","Supprimer et remplacer une rareté"]]},
  {label:"Apparence des cartes",future:false,items:[["holo.read","Voir les réglages holo"],["holo.edit","Modifier les réglages holo"]]},
  {label:"Défauts des exemplaires",future:false,items:[["defects.preview","Utiliser l’atelier de simulation des défauts"]]},
  {label:"Configuration",future:false,items:[["config.read","Lire la configuration"],["config.edit","Modifier la configuration"]]},

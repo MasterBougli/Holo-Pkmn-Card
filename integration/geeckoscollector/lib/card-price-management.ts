@@ -1,3 +1,4 @@
+import { getGameRarities,findRarity,canonicalRarity } from "./rarity-catalogue";
 import { inArray } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { cardPriceRules } from "@/lib/card-price-schema";
@@ -10,22 +11,22 @@ import { getPublicCardDetails } from "./catalogue-completeness";
 type Connection=Pick<typeof db,"select">;
 type Actor={id:string;username?:string|null;name:string};
 export async function getPriceOverview():Promise<PriceOverview>{
- const sets=await getCatalogueSets(),rarities=new Map<string,string>();
- for(const set of sets)for(const card of set.cards)if(card.rarity.trim())rarities.set(rarityKey(card.rarity),card.rarity.trim());
- return {sets:sets.map(({code,name})=>({code,name})),rarities:[...rarities.values()].sort((a,b)=>a.localeCompare(b,"fr"))};
+ const [sets,rarities]=await Promise.all([getCatalogueSets(),getGameRarities()]);
+ return {sets:sets.map(({code,name})=>({code,name})),rarities:rarities.map(r=>r.name)};
 }
 async function targetInfo(scope:PriceScope,target:string,setCode:string,connection:Connection){
  if(scope==="card"){
   const set=await getCatalogueSetData(setCode,connection),card=set?.cards.find(card=>card.id===target);
   if(!set||!card)throw new AdminError("Carte introuvable.",404);
   const details=await getPublicCardDetails(set.code,card.id,connection);
-  return {target:card.id,setCode:set.code,name:card.name+" · "+set.code+" n°"+card.localId,rarity:card.rarity,finishes:singleFinish(details?.availableFinishes)};
+  return {target:card.id,setCode:set.code,name:card.name+" · "+set.code+" n°"+card.localId,rarity:details?.rarity??card.rarity,finishes:singleFinish(details?.availableFinishes)};
  }
- const sets=await getCatalogueSets(connection),card=sets.flatMap(set=>set.cards).find(card=>rarityKey(card.rarity)===rarityKey(target));
+ const card=findRarity(target,await getGameRarities(connection));
  if(!target.trim()||!card)throw new AdminError("Rareté introuvable dans le catalogue.",404);
- return {target:rarityKey(card.rarity),setCode:"",name:card.rarity,rarity:card.rarity,finishes:[...availableFinishes]};
+ return {target:rarityKey(card.name),setCode:"",name:card.name,rarity:card.name,finishes:[...availableFinishes]};
 }
 export async function getResolvedCardPrices(id:string,rarity:string,connection:Connection=db){
+ rarity=canonicalRarity(rarity,await getGameRarities(connection));
  const keys=availableFinishes.flatMap(finish=>[priceKey("rarity",rarity,finish),priceKey("card",id,finish)]);
  const rows=await connection.select().from(cardPriceRules).where(inArray(cardPriceRules.key,keys));
  const rules=new Map(rows.map(row=>[row.key,row]));

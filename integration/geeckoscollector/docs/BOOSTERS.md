@@ -30,3 +30,6 @@ Modal centrée, en-tête et pied séparés du défilement interne. Réduction de
 ## Révélations 0.0.18
 Le paquet reste immobile et disparaît par fondu ; la bande de découpe utilise une petite languette rectangulaire, une couture discrète et une zone tactile de 44 px. Les cartes au-delà de Commune/Peu commune ont un contour coloré, un halo et des rayons brefs après retournement. Aucun indice de rareté avant révélation. Les effets sont indépendants des finitions holo et du tirage.
 Administration > Boosters et cadeaux > Révélation des cartes rares : activation et couleur hexadécimale par libellé de rareté ; valeurs initiales déterministes, inconnues désactivées tant que non reconnues/configurées. Commune/Peu commune restent sans effet spécial. Permissions boosters.read/edit, contrôle d'origine, validation, verrou, révision indépendante et journal avant/après. Migration 0010 ajoute uniquement deux colonnes dans site_settings. En mouvement réduit, contour fixe et aucun rayon animé.
+
+## Raretés administrables — 0.0.19
+La liste commune se gère dans Administration > Raretés. Renommer ou remplacer une rareté met à jour les compositions actuelles, tarifs généraux et couleurs ; les anciens exemplaires et boosters attribués gardent leurs informations figées. Voir docs/RARETES.md.

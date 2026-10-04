@@ -1,3 +1,4 @@
+import { getGameRarities,canonicalRarity,findRarity } from "./rarity-catalogue";
 import { readFile,realpath,stat } from "node:fs/promises";
 import path from "node:path";
 import { eq } from "drizzle-orm";
@@ -23,7 +24,7 @@ export async function hasCardImage(code:string,id:string){
 }
 export async function getSetCompleteness(code:string,connection:Connection=db){
  const set=await getCatalogueSetData(code,connection);if(!set)return null;
- const [base,rows]=await Promise.all([readBaseDetails(set.code),connection.select().from(catalogueCards).where(eq(catalogueCards.setCode,set.code))]);
+ const [base,rows,rarities]=await Promise.all([readBaseDetails(set.code),connection.select().from(catalogueCards).where(eq(catalogueCards.setCode,set.code)),getGameRarities(connection)]);
  const overrides=new Map(rows.map(row=>[row.id,row]));
  const cards:CardMetadataView[]=[];
  // Bound file probes rather than issuing one unbounded request per card.
@@ -32,9 +33,9 @@ export async function getSetCompleteness(code:string,connection:Connection=db){
    const detail=base[card.id]??{},row=overrides.get(card.id);
    const raw=row?{name:row.name,localId:row.localId,rarity:row.rarity,illustrator:row.illustrator,finishes:row.finishes}:
     {name:detail.name??card.name,localId:detail.localId??card.localId,rarity:detail.rarity??card.rarity,illustrator:detail.illustrator??"",finishes:availableFinishes.filter(finish=>finish!=="fullart"&&detail.variants?.[finish]===true)};
-   const fields:CardMetadataFields={...raw,finishes:singleFinish(raw.finishes)};
+   const fields:CardMetadataFields={...raw,rarity:canonicalRarity(raw.rarity,rarities),finishes:singleFinish(raw.finishes)};
    const imageAvailable=await hasCardImage(set.code,card.id);
-   return {...fields,id:card.id,setCode:set.code,setName:set.name,revision:row?.revision??0,imageAvailable,missing:missingMetadata(fields,imageAvailable),source:row?.source??"tcgdex"};
+   return {...fields,id:card.id,setCode:set.code,setName:set.name,revision:row?.revision??0,imageAvailable,missing:[...missingMetadata(fields,imageAvailable),...(fields.rarity.trim()&&!findRarity(fields.rarity,rarities)?["Rareté du jeu à choisir"]:[])],source:row?.source??"tcgdex"};
   })));
  }
  const incomplete=cards.filter(card=>card.missing.length);
@@ -43,11 +44,11 @@ export async function getSetCompleteness(code:string,connection:Connection=db){
 }
 export async function getPublicCardDetails(code:string,id:string,connection:Connection=db){
  const set=await getCatalogueSetData(code,connection);if(!set||!set.cards.some(card=>card.id===id))return null;
- const [base,rows]=await Promise.all([readBaseDetails(set.code),connection.select().from(catalogueCards).where(eq(catalogueCards.id,id)).limit(1)]);
+ const [base,rows,rarities]=await Promise.all([readBaseDetails(set.code),connection.select().from(catalogueCards).where(eq(catalogueCards.id,id)).limit(1),getGameRarities(connection)]);
  const row=rows[0],brief=set.cards.find(card=>card.id===id)!;
  if(!base[id]&&!row)return null;
  const {_local,...details}=base[id]??{};
  void _local;
  const {_local:privateLocal,...stored}=row?.details??{};void privateLocal;
- return {...details,...stored,set:{name:set.name,cardCount:{official:set.officialCount,total:set.totalCount}},name:row?.name??details.name??brief.name,localId:row?.localId??details.localId??brief.localId,rarity:row?.rarity??details.rarity??brief.rarity,illustrator:row?.illustrator??details.illustrator,availableFinishes:singleFinish(row?.finishes??availableFinishes.filter(finish=>finish!=="fullart"&&(details.variants as Record<string,boolean>|undefined)?.[finish]===true))};
+ return {...details,...stored,set:{name:set.name,cardCount:{official:set.officialCount,total:set.totalCount}},name:row?.name??details.name??brief.name,localId:row?.localId??details.localId??brief.localId,rarity:canonicalRarity(row?.rarity??details.rarity??brief.rarity,rarities),illustrator:row?.illustrator??details.illustrator,availableFinishes:singleFinish(row?.finishes??availableFinishes.filter(finish=>finish!=="fullart"&&(details.variants as Record<string,boolean>|undefined)?.[finish]===true))};
 }
