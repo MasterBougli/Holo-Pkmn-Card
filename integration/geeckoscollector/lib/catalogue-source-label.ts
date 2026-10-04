@@ -15,5 +15,7 @@ export function sourceCardNumbers<T extends { scanId: string; printedNumber?: st
   const numbers = cards.map(card => card.printedNumber);
   // Reprint collections and decks can reuse printed numbers. Their scan positions remain distinct.
   const usePrinted = code !== "30C" && numbers.every(Boolean) && new Set(numbers).size === cards.length;
-  return cards.map(card => ({ ...card, number: usePrinted ? card.printedNumber! : normalNumber(card.scanId) }));
+  const positions = cards.map(card => normalNumber(card.scanId.split("/").at(-1)!));
+  const uniquePositions = new Set(positions).size === cards.length;
+  return cards.map((card, index) => ({ ...card, number: usePrinted ? card.printedNumber! : uniquePositions ? positions[index] : normalNumber(card.scanId.replace("/", "-")) }));
 }

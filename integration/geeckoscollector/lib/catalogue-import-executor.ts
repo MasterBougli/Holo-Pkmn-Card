@@ -12,9 +12,10 @@ import { getCatalogueSetData } from "@/lib/catalogue";
 import { availableFinishes } from "@/lib/card-metadata";
 import { normalNumber,normalName,codePattern,tcgdexPattern } from "@/lib/catalogue-import-types";
 import { publicJson } from "@/lib/catalogue-discovery";
+import { validSourceScanId } from "./catalogue-source-scan";
 const hash=(bytes:Buffer)=>createHash("sha256").update(bytes).digest("hex");
 async function scanImage(sourceCode:string,scanId:string):Promise<Buffer>{
- if(!codePattern.test(sourceCode)||!/^[a-zA-Z0-9_.-]{1,100}$/.test(scanId))throw new Error("Référence de scan invalide.");
+ if(!codePattern.test(sourceCode)||!validSourceScanId(scanId))throw new Error("Référence de scan invalide.");
  const response=await fetch("https://pokecardex-scans.b-cdn.net/sets/"+sourceCode+"/FR/"+scanId+".jpg?class=hd",{signal:AbortSignal.timeout(25000),redirect:"error"});
  if(!response.ok)throw new Error("Scan indisponible ("+response.status+").");
  if(Number(response.headers.get("content-length")??0)>8*1024*1024)throw new Error("Scan trop volumineux.");

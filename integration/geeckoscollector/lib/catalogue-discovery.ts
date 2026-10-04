@@ -6,6 +6,7 @@ import { getCatalogueSets } from "@/lib/catalogue";
 import { readBaseDetails } from "@/lib/catalogue-completeness";
 import { normalName,normalNumber,codePattern,type SourceCard,type DiscoveryItem } from "@/lib/catalogue-import-types";
 import { sourceCardLabel,sourceCardNumbers } from "./catalogue-source-label";
+import { sourceScanReference } from "./catalogue-source-scan";
 export async function publicJson(url:string){
  const response=await fetch(url,{signal:AbortSignal.timeout(20000),headers:{"User-Agent":"GeeckosCollector-catalogue/1.0"},redirect:"error"});
  if(!response.ok)throw new Error("TCGdex indisponible ("+response.status+").");
@@ -45,14 +46,14 @@ export async function readChecklist(page:any,code:string){
   const observed=await page.evaluate(()=>({text:document.body.innerText,images:Array.from(document.querySelectorAll('img')).map(img=>({src:img.getAttribute('src')??"",alt:img.alt})),height:document.documentElement.scrollHeight,y:window.scrollY}));
   expected=Number(observed.text.match(/(\d+)\s+cartes/i)?.[1]??0);
   for(const img of observed.images){
-   const match=img.src.match(/^https:\/\/pokecardex-scans\.b-cdn\.net\/sets\/([A-Z0-9-]+)\/FR\/([a-zA-Z0-9_.-]+)\.jpg(?:\?.*)?$/);
+   const scanId=sourceScanReference(img.src,code);
    const label=sourceCardLabel(img.alt);
-   if(match?.[1]===code&&label)cards.set(match[2],{...label,scanId:match[2]});
+   if(scanId&&label)cards.set(scanId,{...label,scanId});
   }
   if(observed.y+1800>=observed.height&&observed.height===lastHeight)break;
   lastHeight=observed.height;await page.evaluate(()=>window.scrollBy(0,1400));await page.waitForTimeout(500);
  }
- const values=sourceCardNumbers([...cards.values()],code);return {cards:values,expected,complete:expected>0&&values.length===expected};
+ const values=sourceCardNumbers([...cards.values()],code);return {cards:values,expected,complete:expected>0&&values.length===expected&&new Set(values.map(card=>card.number)).size===values.length};
 }
 export async function discoverCatalogue(jobId:string){
  const browser=await openSourceBrowser();
@@ -71,14 +72,14 @@ export async function discoverCatalogue(jobId:string){
   let errors=0;
   for(const [index,source] of sources.entries()){
    const cached=savedItems.get(source.code);
-   if(cached?.complete&&cached.readerVersion===2){
+   if(cached?.complete&&[2,3].includes(cached.readerVersion??0)){
     await db.update(importJobs).set({progress:index+1,summary:source.code+" · reprise · "+(index+1)+" / "+sources.length+" checklists"}).where(eq(importJobs.id,jobId));
     continue;
    }
    const explicit=saved.find(m=>m.sourceCode===source.code),matches=tcgSets.filter(s=>normalName(s.name)===normalName(source.name));
    const tcgdexId=explicit?.tcgdexId??special[source.code]??(matches.length===1?matches[0].id:"");
    const localCode=explicit?.localCode??known.get(tcgdexId)??(source.code==="LOR"?"LOR-MAIN":source.code==="SIT"?"SIT-MAIN":source.code);
-   const item:DiscoveryItem={readerVersion:2,sourceCode:source.code,name:source.name,localCode,tcgdexId,cards:[],missing:0,existing:0,expected:0,complete:false,issues:tcgError?[tcgError]:[],mapping:explicit?"Correspondance validée":tcgdexId?"Correspondance proposée, à valider":"Sans correspondance TCGdex"};
+   const item:DiscoveryItem={readerVersion:3,sourceCode:source.code,name:source.name,localCode,tcgdexId,cards:[],missing:0,existing:0,expected:0,complete:false,issues:tcgError?[tcgError]:[],mapping:explicit?"Correspondance validée":tcgdexId?"Correspondance proposée, à valider":"Sans correspondance TCGdex"};
    const page=await sourcePage(browser);
    try{
     Object.assign(item,await readChecklist(page,source.code));

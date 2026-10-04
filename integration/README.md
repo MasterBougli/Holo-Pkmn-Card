@@ -1,4 +1,4 @@
-# Intégration GeeckosCollector — 0.0.12
+# Intégration GeeckosCollector — 0.0.13
 
 Cette adaptation utilise Pokémon Cards CSS de Simon Goellner (@simeydotme), GPL-3.0.
 Sources amont : https://github.com/simeydotme/pokemon-cards-css
@@ -98,3 +98,10 @@ Le cache Webpack est désactivé pour limiter la mémoire de compilation sur cet
 Le lecteur accepte les numéros avec ou sans dénominateur (SWSH001, AR1, H1), et les cartes sans numéro. Les listes sont dédupliquées par URL de scan. Les numéros imprimés uniques deviennent les numéros de catalogue ; lorsqu’ils se répètent ou manquent, les positions de scan servent d’identifiants. 30C conserve toujours ses positions pour distinguer ses rééditions. Le numéro imprimé reste disponible séparément dans le rapport. Le contrôle du nombre total de cartes reste obligatoire pour valider un import. Aucun scan existant n’est remplacé et aucun set n’est activé par cette correction.
 
 Les recherches interrompues conservent les listes complètes lues par cette version du lecteur. Elles relisent les listes incomplètes ou issues d’un ancien lecteur. Les propositions restent soumises à validation manuelle.
+
+
+## Scans PRZP — 0.0.13
+
+Reconnaissance des scans français avec un sous-dossier de variante (exemple PRZP/FR/149/1.jpg), partagée avec la validation du téléchargement. Domaine source inchangé, un sous-dossier maximum, segments alphanumériques sans chemin relatif ni encodage de séparateur. Les positions finales sont utilisées si elles sont uniques ; sinon la référence complète distingue les variantes. Une collision de numéros bloque la validation de la liste. Le lecteur passe en révision 3 pour relire les résultats issus de l’ancienne règle. Aucun import ou activation automatique.
+
+Une liste complète lue en révision 2 reste réutilisable pendant la reprise du même rapport : la correction ne change pas les références sans sous-dossier. Les listes partielles sont relues par la révision 3. La date d’origine du rapport reste inchangée, donc sa durée de validité ne se prolonge pas.
