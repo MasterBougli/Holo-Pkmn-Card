@@ -1,4 +1,4 @@
-# Intégration GeeckosCollector — 0.0.24
+# Intégration GeeckosCollector — 0.0.25
 
 Cette adaptation utilise Pokémon Cards CSS de Simon Goellner (@simeydotme), GPL-3.0.
 Sources amont : https://github.com/simeydotme/pokemon-cards-css
@@ -162,3 +162,6 @@ Annonces datées : brouillon, publication, archivage et restauration ; pages pub
 
 Compilation finale 0.0.24 réussie (Webpack/TypeScript). Mise en ligne non effectuée, site hôte actif 0.0.22. Les événements jouables ne sont pas publiables dans cette tranche. Aucun événement de démonstration ou récompense réelle créé.
 
+
+## 0.0.25 — Règle des objectifs
+Les objectifs de cartes précises comptent exclusivement les ouvertures de boosters pendant l’événement. Échanges, anciennes possessions et récompenses ne comptent pas. Précision dans les formulaires et documentation ; moteur de progression non livré. Sources préparées, compilation à effectuer avec la prochaine tranche ; site hôte actif 0.0.22.
