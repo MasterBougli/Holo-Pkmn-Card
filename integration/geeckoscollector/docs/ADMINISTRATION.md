@@ -143,3 +143,7 @@ Module /admin/prix : tarifs généraux par rareté et finition, exceptions par c
 ## Mise à jour : finition unique et boosters
 
 Une seule finition par carte ; les fiches ambiguës restent à définir manuellement. Tarifs individuels limités à cette finition. Module de composition par set, cadeaux et ouverture décrit dans BOOSTERS.md. Les mentions anciennes de versions multiples et de boosters à venir ci-dessus constituent le contexte historique.
+
+## Actualités — CMS 0.0.22
+Module /admin/actualites : éditeur visuel par blocs, bibliothèque d’images, aperçu, historique, publication immédiate ou programmée, corbeille et restauration. Couverture facultative ; description alternative obligatoire. Permissions news.read/create/edit/delete/publish séparées. Les modifications restent en brouillon avant validation. Voir CMS_ACTUALITES.md.
+

@@ -1,3 +1,4 @@
+import "./news.css";
 import "./boosters.css";
 import "./card-thickness.css";
 import "./site-availability.css";

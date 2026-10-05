@@ -1,4 +1,4 @@
-# Intégration GeeckosCollector — 0.0.21
+# Intégration GeeckosCollector — 0.0.22
 
 Cette adaptation utilise Pokémon Cards CSS de Simon Goellner (@simeydotme), GPL-3.0.
 Sources amont : https://github.com/simeydotme/pokemon-cards-css
@@ -140,4 +140,10 @@ Boutons dans le flux, texte visible sur mobile, menu admin repliable, modales ce
 
 ## 0.0.21 — Formulaire de cadeaux
 Choix du set directement dans le panneau cadeaux, placé avant la composition ; sélection indépendante du brouillon de composition. Motif obligatoire et toutes les conditions de validation expliqués près du bouton. Protections métier conservées.
+
+
+## 0.0.22 — Journal du jeu
+CMS par blocs, aperçu, brouillons, publication et programmation Europe/Paris, historique, corbeille et bibliothèque d’images. Couverture facultative. Permissions distinctes et révisions contre les écrasements. Migration additive 0012.
+
+Livraison CMS 0.0.22 : compilation validée, déploiement du site hôte en attente d’approbation explicite. Aucun article de démonstration publié.
 

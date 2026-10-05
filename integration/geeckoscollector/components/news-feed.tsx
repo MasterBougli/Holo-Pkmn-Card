@@ -1,0 +1,6 @@
+import Link from "next/link";
+import {publicNews} from "@/lib/news-management";
+export async function NewsFeed({limit=3,offset=0,pagination=false}:{limit?:number;offset?:number;pagination?:boolean}){
+ const rows=await publicNews(limit+(pagination?1:0),offset),articles=rows.slice(0,limit);
+ return <><div className="news-feed">{articles.length?articles.map(a=><article className={"news-teaser "+(a.content.coverId?"":"news-teaser-text")} key={a.id}>{a.content.coverId&&<img src={"/api/news/media/"+a.content.coverId} alt={a.content.coverAlt}/>}<div><span className="quest-label">JOURNAL DU JEU</span>{a.date&&<time dateTime={new Date(a.date).toISOString()}>{new Date(a.date).toLocaleDateString("fr-FR",{timeZone:"Europe/Paris"})}</time>}<h3><Link href={"/actualites/"+a.slug}>{a.content.title}</Link></h3><p>{a.content.summary}</p><Link className="quiet-button" href={"/actualites/"+a.slug}>Lire l’actualité</Link></div></article>):<div className="news-empty"><h3>Le journal se prépare</h3><p>Les prochaines nouvelles du jeu apparaîtront ici.</p></div>}</div>{pagination&&<nav className="news-pagination" aria-label="Pages des actualités">{offset>0&&<Link className="quiet-button" href={"/actualites?page="+(offset/limit-1)}>Précédente</Link>}{rows.length>limit&&<Link className="quiet-button" href={"/actualites?page="+(offset/limit+1)}>Suivante</Link>}</nav>}</>;
+}
