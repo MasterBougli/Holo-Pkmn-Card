@@ -1,9 +1,22 @@
-# GeeckosCollector — sources 0.0.44
+# GeeckosCollector — intégration holo
 
-Source de l’application et de l’intégration Pokémon Cards CSS, sous GPL-3.0. Effets originaux : Simon Goellner (@simeydotme), https://github.com/simeydotme/pokemon-cards-css ; adaptation : MasterBougli.
+Cette intégration contient uniquement les éléments nécessaires pour utiliser les effets holographiques et l’épaisseur 3D des cartes dans GeeckosCollector :
 
-Cette version comprend la suppression directe des raretés, le classeur personnel et partagé, les favoris, la progression et les cartes manquantes, ainsi que la configuration des récompenses de collection. La distribution de ces récompenses reste à implémenter.
+- `app/card-holo.css` : effets CSS dérivés de Pokémon Cards CSS ;
+- `components/holo-surface.tsx` : surface holo dont la lumière suit l’orientation de la carte ;
+- `components/card-thickness.tsx` et `app/card-thickness.css` : tranche blanche de la carte 3D ;
+- `lib/card-appearance.ts` et `lib/card-layouts.ts` : finitions, effets et fenêtres d’illustration.
 
-Les dossiers app, components, lib, drizzle et scripts contiennent les sources correspondantes. Le dossier geeckoscollector conserve l’ancienne intégration à titre historique. Les effets et textures originaux sont à la racine du dépôt.
+Le dépôt ne contient aucune page du site, aucun compte, aucune API, aucune base de données, aucun panneau d’administration et aucune donnée de GeeckosCollector. Les réglages d’administration restent dans le projet hôte et consomment cette intégration.
 
-Utiliser Node 22 : npm ci, puis npm run build. Configurer séparément les variables d’environnement et les ressources du jeu ; aucun secret, donnée de compte ou illustration du jeu n’est fourni. Appliquer les migrations avant l’activation des fonctionnalités qui en dépendent. Conserver la licence et les crédits lors de toute redistribution.
+## Utilisation dans GeeckosCollector
+
+Copier ces fichiers dans une application React/Next.js, adapter l’alias `@/` vers la racine de l’application, puis fournir à `HoloSurface` une apparence résolue et une rotation `{ x, y }` en degrés. La lumière est calculée depuis cette rotation et ne suit pas le pointeur.
+
+Les profils `normal`, `reverse` et `fullart` peuvent utiliser des fenêtres d’illustration différentes. Les effets disponibles sont `classic`, `illusion`, `glitter`, `rainbow` et `galaxy`.
+
+## Crédits et licence
+
+Les effets CSS originaux proviennent de [Pokémon Cards CSS](https://github.com/simeydotme/pokemon-cards-css), par Simon Goellner, sous GPL-3.0. Cette adaptation et ses fichiers d’intégration sont distribués sous GPL-3.0 ; conserver la licence et les crédits lors de toute redistribution.
+
+Version de l’intégration : 0.0.44.

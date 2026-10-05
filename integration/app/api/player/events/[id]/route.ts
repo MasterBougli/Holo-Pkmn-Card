@@ -1,2 +1,0 @@
-import {NextResponse} from "next/server";import {playerGameSession} from "@/lib/player-game-session";import {playerEventProgress} from "@/lib/event-progress";import {adminFailure} from "@/lib/admin-http";
-export async function GET(_request:Request,{params}:{params:Promise<{id:string}>}){try{const s=await playerGameSession(),{id}=await params;return NextResponse.json(await playerEventProgress(s.user.id,id),{headers:{"Cache-Control":"private, no-store"}});}catch(e){return adminFailure(e);}}

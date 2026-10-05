@@ -56,4 +56,4 @@ If you think this is super cool, or useful, and want to donate a little, then yo
 
 ## Adaptation GeeckosCollector
 
-Voir [integration/README.md](integration/README.md) pour les sources et les réglages holo par set et par carte. Édition du fork : **0.0.1**. Licence et crédits amont conservés.
+Voir [integration/README.md](integration/README.md) pour les seuls fichiers d’intégration holo utilisés par GeeckosCollector. Le fork ne contient pas les sources du site hôte, ses comptes, son administration ou sa base de données. Version de l’intégration : **0.0.44**. Licence et crédits amont conservés.
