@@ -147,3 +147,6 @@ CMS par blocs, aperçu, brouillons, publication et programmation Europe/Paris, h
 
 Livraison CMS 0.0.22 : compilation validée, déploiement du site hôte en attente d’approbation explicite. Aucun article de démonstration publié.
 
+
+Mise en ligne CMS 0.0.22 confirmée le 5 octobre 2026 après autorisation. Module et accueils consultés en lecture seule ; aucun article de démonstration ni test de publication réel.
+

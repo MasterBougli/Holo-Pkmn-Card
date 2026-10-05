@@ -18,3 +18,7 @@ Vérifications seulement selon autorisation utilisateur ; compilation et revue d
 ### État de livraison — 5 octobre 2026
 Compilation finale Webpack, TypeScript et génération des pages réussies sur VPS. Migration appliquée après sauvegarde privée. Mise en ligne non effectuée : validation explicite de Bougli demandée par le contrôle automatique de déploiement. Le site actif reste en 0.0.21. Aucun article créé ni publié ; parcours CMS et import d’image réels à vérifier après mise en ligne. Sources de l’intégration préparées en 0.0.22.
 
+
+### Mise en ligne confirmée — 5 octobre 2026
+Après accord « Ok continue » de Bougli à la demande explicite, CMS 0.0.22 déployé. Build précédent conservé (.next.pre-news-20261005113037). API de session 200 ; web et worker running, OOM=false. Consultation en lecture seule : administration Actualités avec liste vide, journal public et actualités sur les deux accueils. Capture privée Audit/preuves/news-admin-0.0.22.png. Aucun article créé/publié, aucun import d’image réel ni suite de tests exécutée ; parcours complets encore à essayer. Couverture facultative. Ordre chronologique par défaut ; choix d’épinglage en attente.
+
