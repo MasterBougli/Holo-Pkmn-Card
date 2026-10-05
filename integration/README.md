@@ -1,4 +1,4 @@
-# GeeckosCollector — sources 0.0.43
+# GeeckosCollector — sources 0.0.44
 
 Source de l’application et de l’intégration Pokémon Cards CSS, sous GPL-3.0. Effets originaux : Simon Goellner (@simeydotme), https://github.com/simeydotme/pokemon-cards-css ; adaptation : MasterBougli.
 
