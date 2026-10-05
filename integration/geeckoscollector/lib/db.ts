@@ -1,3 +1,4 @@
+import * as eventSchema from "./event-schema";
 import * as newsSchema from "./news-schema";
 import { gameRarities } from "./rarity-schema";
 import * as boosterSchema from "@/lib/booster-schema";
@@ -20,4 +21,4 @@ const globalForDb = globalThis as unknown as { pool?: Pool };
 const pool = globalForDb.pool ?? new Pool({ connectionString, max: 10 });
 if (process.env.NODE_ENV !== "production") globalForDb.pool = pool;
 
-export const db = drizzle(pool, { schema: { ...newsSchema,gameRarities,...boosterSchema,cardPriceRules, ...importSchema,...authSchema, ...adminSchema, siteSettings, playerPreferences, gameSets,cardAvailability,catalogueCards, holoProfiles,holoProfileHistory } });
+export const db = drizzle(pool, { schema: { ...eventSchema,...newsSchema,gameRarities,...boosterSchema,cardPriceRules, ...importSchema,...authSchema, ...adminSchema, siteSettings, playerPreferences, gameSets,cardAvailability,catalogueCards, holoProfiles,holoProfileHistory } });

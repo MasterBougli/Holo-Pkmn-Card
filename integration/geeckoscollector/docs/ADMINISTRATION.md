@@ -147,3 +147,6 @@ Une seule finition par carte ; les fiches ambiguës restent à définir manuelle
 ## Actualités — CMS 0.0.22
 Module /admin/actualites : éditeur visuel par blocs, bibliothèque d’images, aperçu, historique, publication immédiate ou programmée, corbeille et restauration. Couverture facultative ; description alternative obligatoire. Permissions news.read/create/edit/delete/publish séparées. Les modifications restent en brouillon avant validation. Voir CMS_ACTUALITES.md.
 
+
+## Événements — première tranche 0.0.24
+Annonces datées administrables, publication, archivage/restauration et pages publiques. Préparation de brouillons jouables avec objectifs et récompenses ; leur publication reste bloquée tant que le moteur des récompenses n’est pas livré. Voir EVENEMENTS.md. Livraison à confirmer après compilation.

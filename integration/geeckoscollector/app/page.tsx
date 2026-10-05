@@ -1,3 +1,4 @@
+import {EventFeed} from "@/components/event-feed";
 import {NewsFeed} from "@/components/news-feed";
 import Link from "next/link";
 import { headers } from "next/headers";
@@ -136,15 +137,7 @@ export default async function HomePage() {
           <div className="quest-board">
             <div><NewsFeed limit={3}/><Link className="quiet-button" href="/actualites">Toutes les actualités</Link></div>
 
-            <article className="quest-card quest-event" id="evenements">
-              <div className="quest-icon"><CalendarDays size={22} aria-hidden="true" /></div>
-              <div className="quest-copy">
-                <span className="quest-label">PROCHAIN RENDEZ-VOUS</span>
-                <h3>Événement de lancement</h3>
-                <p>De belles surprises attendent les premiers collectionneurs.</p>
-              </div>
-              <span className="event-stamp" aria-hidden="true">BIENTÔT</span>
-            </article>
+            <div id="evenements"><EventFeed limit={3} heading={3}/><Link className="quiet-button" href="/evenements">Tous les événements</Link></div>
           </div>
         </section>
 

@@ -1,4 +1,4 @@
-# Intégration GeeckosCollector — 0.0.23
+# Intégration GeeckosCollector — 0.0.24
 
 Cette adaptation utilise Pokémon Cards CSS de Simon Goellner (@simeydotme), GPL-3.0.
 Sources amont : https://github.com/simeydotme/pokemon-cards-css
@@ -155,4 +155,10 @@ Mise en ligne CMS 0.0.22 confirmée le 5 octobre 2026 après autorisation. Modul
 Menu Actualités vers le journal avec état actif ; conseils de complétude partagés entre serveur et éditeur, liens vers les champs à compléter, alerte navigateur avant fermeture d’un brouillon non enregistré. Couverture toujours facultative. Aucun changement de schéma. Cadrage des événements dans docs/EVENEMENTS.md.
 
 Livraison 0.0.23 : compilation réussie ; mise en ligne du site hôte en attente d’accord explicite. Site actif 0.0.22.
+
+
+## 0.0.24 — Annonces et préparation des événements
+Annonces datées : brouillon, publication, archivage et restauration ; pages publiques et deux accueils reliés. Préparation des défis avec objectifs et récompenses de boosters/cartes/pièces/gemmes. Publication jouable bloquée tant que progression et récupération ne sont pas disponibles. Migration additive 0013 ; pas d’attribution ou événement automatique. Compilation et mise en ligne à confirmer.
+
+Compilation finale 0.0.24 réussie (Webpack/TypeScript). Mise en ligne non effectuée, site hôte actif 0.0.22. Les événements jouables ne sont pas publiables dans cette tranche. Aucun événement de démonstration ou récompense réelle créé.
 

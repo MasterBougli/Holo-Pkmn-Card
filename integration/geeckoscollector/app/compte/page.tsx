@@ -1,3 +1,4 @@
+import {EventFeed} from "@/components/event-feed";
 import {NewsFeed} from "@/components/news-feed";
 import Link from "next/link";
 import Image from "next/image";
@@ -23,7 +24,7 @@ export default async function PlayerHomePage(){
   <header className="player-command"><div className="player-avatar" aria-hidden="true">{playerName.slice(0,1)}</div><div><span className="section-kicker">Carnet de collectionneur</span><h1>À toi de jouer, {playerName}.</h1><p>Ta place est prête à la table de collection.</p></div><div className="player-account-actions">{adminAccess&&<Link className="quiet-button" href="/admin"><Shield size={16} aria-hidden="true"/> Administration</Link>}<SignOutButton/></div></header>
   <section className="collection-section" id="actualites" aria-labelledby="player-news-title">
    <div className="collection-section-heading"><div><span className="section-kicker"><span>01</span> LE JOURNAL DU JEU</span><h2 id="player-news-title">Actualités et événements</h2></div><span className="binder-tab">Carnet de bord</span></div>
-   <div className="quest-board"><div><NewsFeed limit={3}/><Link className="quiet-button" href="/actualites">Toutes les actualités</Link></div><article className="quest-card quest-event" id="evenements"><div className="quest-icon"><CalendarDays aria-hidden="true"/></div><div className="quest-copy"><span className="quest-label">RENDEZ-VOUS</span><h3>Le prochain événement</h3><p>Aucun événement annoncé pour le moment.</p></div><span className="event-stamp">BIENTÔT</span></article></div>
+   <div className="quest-board"><div><NewsFeed limit={3}/><Link className="quiet-button" href="/actualites">Toutes les actualités</Link></div><div id="evenements"><EventFeed limit={3} heading={3}/><Link className="quiet-button" href="/evenements">Tous les événements</Link></div></div>
   </section>
   <section className="collection-section" aria-labelledby="player-progress-title">
    <div className="collection-section-heading"><div><span className="section-kicker"><span>02</span> TON ÉQUIPEMENT</span><h2 id="player-progress-title">Progression et boosters</h2></div><Layers3 aria-hidden="true"/></div>

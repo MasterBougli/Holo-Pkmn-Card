@@ -92,6 +92,13 @@
       "when": 1791151200000,
       "tag": "0012_news_cms",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1791197852994,
+      "tag": "0013_game_events",
+      "breakpoints": true
     }
   ]
 }

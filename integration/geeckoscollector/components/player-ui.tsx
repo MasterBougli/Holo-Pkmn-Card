@@ -1,5 +1,5 @@
 "use client";
-import { SiteAvailabilityProvider,SiteAvailabilityNotice,useSiteAvailability } from "@/components/site-availability";
+import { SiteAvailabilityProvider,SiteAvailabilityNotice } from "@/components/site-availability";
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { Accessibility, CalendarDays, Home, Layers3, Newspaper, UserRound, X } from "lucide-react";
@@ -16,11 +16,11 @@ export function Topbar({variant}:{variant?:"collection"}) {
 
 export function BottomNav({active="home",variant}:{active?:string;variant?:"collection"}) {
   const {data:session,isPending}=authClient.useSession();
-  const availability=useSiteAvailability();
+
   const pathname=usePathname();
-  const current=pathname?.startsWith("/actualites")?"news":active;
-  const accountHome=session&&(!availability?.maintenanceEnabled||availability.canPlay)?"/compte":"/";
-  const items=[{id:"home",href:"/",label:"Accueil",Icon:Home},{id:"news",href:"/actualites",label:"Actualités",Icon:Newspaper},{id:"events",href:accountHome+"#evenements",label:"Événements",Icon:CalendarDays},{id:"sets",href:"/sets",label:"Sets",Icon:Layers3},{id:"login",href:session||isPending?"/compte":"/connexion",label:session?"Mon compte":isPending?"Compte…":"Connexion",Icon:UserRound}];
+  const current=pathname?.startsWith("/actualites")?"news":pathname?.startsWith("/evenements")?"events":active;
+
+  const items=[{id:"home",href:"/",label:"Accueil",Icon:Home},{id:"news",href:"/actualites",label:"Actualités",Icon:Newspaper},{id:"events",href:"/evenements",label:"Événements",Icon:CalendarDays},{id:"sets",href:"/sets",label:"Sets",Icon:Layers3},{id:"login",href:session||isPending?"/compte":"/connexion",label:session?"Mon compte":isPending?"Compte…":"Connexion",Icon:UserRound}];
   return <><nav className={`bottom-nav ${variant==="collection"?"collection-bottom-nav":""}`} aria-label="Navigation principale"><div className="nav-inner">{items.map(({id,href,label,Icon})=><Link key={id} className={`nav-item ${(current===id||(id==="login"&&current==="account"))?"active":""}`} href={href} prefetch={false} aria-current={(current===id||(id==="login"&&current==="account"))?"page":undefined}><Icon aria-hidden="true"/><span>{label}</span></Link>)}</div></nav><div className="page-bottom"/></>;
 }
 
