@@ -9,7 +9,7 @@ type Draft={finish:PriceRule["finish"];coins:string;gems:string;revision:number}
 const drafts=(detail:PriceDetail)=>detail.rules.map(rule=>({...rule,coins:rule.coins===null?"":String(rule.coins),gems:rule.gems===null?"":String(rule.gems)}));
 const format=(value:number|null)=>value===null?"À définir":value.toLocaleString("fr-FR");
 function amount(value:string){return value.trim()===""?null:/^\d+$/.test(value.trim())?Number(value.trim()):NaN;}
-export function AdminPrices({initial,canEdit,startingCard}:{initial:PriceOverview;canEdit:boolean;startingCard?:{setCode:string;target:string}}){
+export function AdminPrices({initial,canEdit,startingCard,lockedCard=false}:{initial:PriceOverview;canEdit:boolean;startingCard?:{setCode:string;target:string};lockedCard?:boolean}){
  const [selection,setSelection]=useState(startingCard?{scope:"card" as PriceScope,...startingCard}:{scope:"card" as PriceScope,target:"",setCode:initial.sets[0]?.code??""});
  const [cards,setCards]=useState<CatalogueCard[]>([]),[cardQuery,setCardQuery]=useState("");
  const [detail,setDetail]=useState<PriceDetail|null>(null),[draft,setDraft]=useState<Draft[]>([]);
@@ -21,7 +21,7 @@ export function AdminPrices({initial,canEdit,startingCard}:{initial:PriceOvervie
   setDetail(null);setDraft([]);setStatus("");setError("");setConflict(false);setSelection(next);
  }
  useEffect(()=>{
-  if(selection.scope!=="card"||!selection.setCode){setCards([]);setCardsLoading(false);return;}
+  if(lockedCard||selection.scope!=="card"||!selection.setCode){setCards([]);setCardsLoading(false);return;}
   const controller=new AbortController();setCardsLoading(true);setCards([]);setError("");
   fetch("/api/admin/prices?"+new URLSearchParams({set:selection.setCode}),{cache:"no-store",signal:controller.signal})
    .then(async response=>{const data=await response.json();if(!response.ok)throw Error(data.error??"Chargement impossible.");return data.cards as CatalogueCard[];})
@@ -29,7 +29,7 @@ export function AdminPrices({initial,canEdit,startingCard}:{initial:PriceOvervie
    .catch(error=>{if(!controller.signal.aborted)setError(error.message??"Impossible de charger les cartes.");})
    .finally(()=>{if(!controller.signal.aborted)setCardsLoading(false);});
   return()=>controller.abort();
- },[selection.scope,selection.setCode]);
+ },[selection.scope,selection.setCode,lockedCard]);
  useEffect(()=>{
   if(!selection.target){setDetail(null);setDraft([]);setLoading(false);return;}
   const controller=new AbortController();setLoading(true);setDetail(null);setDraft([]);setError("");setConflict(false);
@@ -59,7 +59,7 @@ export function AdminPrices({initial,canEdit,startingCard}:{initial:PriceOvervie
  const visibleCards=cards.filter(card=>(card.name+" "+card.localId+" "+card.rarity).toLocaleLowerCase("fr").includes(cardQuery.toLocaleLowerCase("fr")));
  const selectedCard=cards.find(card=>card.id===selection.target);
  return <>
- <section className="admin-target-panel price-intro"><div><span className="admin-context-tag">ÉQUILIBRAGE DE LA COLLECTION</span><h2>Fixer le prix de chaque carte</h2><p>Choisis un set, puis une carte pour régler ses prix en pièces et en gemmes selon sa finition unique. Un tarif non renseigné reste « À définir ». Zéro est un tarif explicite.</p></div><div className="price-currencies"><span><Coins aria-hidden="true"/>Pièces</span><span><Gem aria-hidden="true"/>Gemmes</span></div><p>Les défauts d’impression et de découpe ne modifient pas ces prix de base. Les échanges entre joueurs pourront avoir leurs propres offres.</p></section>
+ {!lockedCard&&<><section className="admin-target-panel price-intro"><div><span className="admin-context-tag">ÉQUILIBRAGE DE LA COLLECTION</span><h2>Fixer le prix de chaque carte</h2><p>Choisis un set, puis une carte pour régler ses prix en pièces et en gemmes selon sa finition unique. Un tarif non renseigné reste « À définir ». Zéro est un tarif explicite.</p></div><div className="price-currencies"><span><Coins aria-hidden="true"/>Pièces</span><span><Gem aria-hidden="true"/>Gemmes</span></div><p>Les défauts d’impression et de découpe ne modifient pas ces prix de base. Les échanges entre joueurs pourront avoir leurs propres offres.</p></section>
  <section className="admin-settings-panel price-selection"><h2>Choisir les tarifs à régler</h2><div className="price-tabs" role="group" aria-label="Type de tarif">
  <button type="button" className="quiet-button" aria-pressed={selection.scope==="rarity"} disabled={busy} onClick={()=>{setCardQuery("");choose({scope:"rarity",target:initial.rarities[0]??"",setCode:""});}}>Par rareté</button>
  <button type="button" className="quiet-button" aria-pressed={selection.scope==="card"} disabled={busy} onClick={()=>{setCardQuery("");choose({scope:"card",target:"",setCode:initial.sets[0]?.code??""});}}>Par carte</button></div>
@@ -69,7 +69,7 @@ export function AdminPrices({initial,canEdit,startingCard}:{initial:PriceOvervie
  <label>Carte<select disabled={busy||cardsLoading} value={selection.target} onChange={event=>choose({...selection,target:event.target.value})}>{!visibleCards.some(card=>card.id===selection.target)&&selectedCard&&<option value={selectedCard.id}>n°{selectedCard.localId} · {selectedCard.name} (sélection actuelle)</option>}{!cards.length&&<option value="">{cardsLoading?"Chargement…":"Aucune carte"}</option>}{visibleCards.map(card=><option key={card.id} value={card.id}>n°{card.localId} · {card.name}</option>)}</select></label>
  <p className="admin-helper">{visibleCards.length} carte(s) dans la recherche.</p></div>}
  <p className="admin-helper">{selection.scope==="card"?"Ces prix s’appliquent uniquement à la carte choisie et à sa finition. Un champ vide reprend le tarif de sa rareté.":"Le tarif s’applique à toutes les cartes de cette rareté et de cette finition, sauf exception enregistrée."}</p>
- </section>
+ </section></>}
  <form className="admin-settings-panel price-editor" onSubmit={event=>{event.preventDefault();void save();}} aria-busy={loading||busy}>
  <header className="price-editor-heading"><div><span className="admin-context-tag">{selection.scope==="card"?"PRIX DE CETTE CARTE":"TARIFS GÉNÉRAUX"}</span><h2>{detail?.name??"Sélectionne une carte ou une rareté"}</h2>{detail?.scope==="card"&&<p>Rareté : {detail.rarity||"Non renseignée"}</p>}</div>{detail?.scope==="card"&&<Image src={"/media/Cards/"+detail.setCode+"/"+detail.target+".png"} width={85} height={117} unoptimized alt={detail.name}/>}</header>
  {loading&&<p role="status">Chargement des tarifs…</p>}

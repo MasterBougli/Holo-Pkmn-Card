@@ -266,3 +266,22 @@ body[data-contrast=renforce] .admin-config-summary>div,body[data-contrast=renfor
 .rarity-list{display:grid;gap:12px;margin:24px 0}.rarity-entry{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:20px;background:var(--paper);border:1px solid var(--line);border-radius:18px}.rarity-entry>div:first-child{min-width:0}.rarity-entry h3{margin:0 0 8px}.rarity-entry p{margin:8px 0;font-size:.9rem;overflow-wrap:anywhere}.rarity-entry-actions{display:flex;gap:10px;flex-shrink:0}.rarity-entry details summary{min-height:44px;cursor:pointer;font-size:.85rem}
 .rarity-operation{scroll-margin-top:30px}.rarity-operation fieldset{border:0;padding:0;display:grid;gap:18px}.rarity-operation input,.rarity-operation select{max-width:560px}.rarity-replacement-preview{padding:20px;border:1px solid var(--line);border-radius:16px;background:var(--paper);display:grid;gap:14px}.rarity-price-comparison{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.rarity-price-comparison article{padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--card)}.rarity-status{padding:16px;margin-top:16px}.rarity-status button{margin-left:16px}
 @media(max-width:700px){.rarity-entry{align-items:flex-start;flex-direction:column}.rarity-entry-actions{flex-wrap:wrap}.rarity-tools{align-items:stretch;flex-direction:column}.rarity-tools form{align-items:stretch;flex-direction:column}.rarity-price-comparison{grid-template-columns:1fr}}
+
+/* Administration: five spaces with contextual tools, usable at large text sizes. */
+.admin-subnavigation { margin:0 0 24px; padding:16px; border:1px solid var(--line); border-radius:16px; background:var(--card); }
+.admin-subnavigation>span { display:block; font-weight:800; margin-bottom:12px; }
+.admin-subnavigation>div,.admin-card-shortcuts { display:flex; flex-wrap:wrap; gap:8px; }
+.admin-subnavigation a,.admin-card-shortcuts a { display:flex; align-items:center; min-height:48px; padding:10px 14px; border:1px solid var(--line); border-radius:10px; color:var(--ink); background:var(--card); text-decoration:none; font-size:.85em; overflow-wrap:anywhere; }
+.admin-subnavigation a[aria-current=page],.admin-sidebar nav a[aria-current=location] { border:2px solid var(--ink); font-weight:850; background:var(--cyan-soft,var(--card)); }
+.admin-subnavigation a:hover,.admin-card-shortcuts a:hover,.admin-overview-card a:hover { text-decoration:underline; }
+.admin-subnavigation a:focus-visible,.admin-card-shortcuts a:focus-visible,.admin-overview-card a:focus-visible { outline:3px solid var(--ink); outline-offset:3px; }
+.admin-overview-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr)); gap:24px; }
+.admin-overview-card h2 { margin:0; font-size:1.2em; }
+.admin-overview-card p { color:var(--muted); line-height:1.6; }
+.admin-overview-card ul { list-style:none; margin:20px 0 0; padding:0; display:grid; gap:8px; }
+.admin-overview-card a { display:flex; align-items:center; justify-content:space-between; gap:12px; min-height:48px; padding:10px 12px; border:1px solid var(--line); border-radius:10px; color:var(--ink); text-decoration:none; overflow-wrap:anywhere; }
+.admin-sidebar nav a { white-space:normal; overflow-wrap:anywhere; }
+.admin-card-shortcuts { margin:20px 0; }
+.admin-card-section { display:grid; gap:24px; margin:24px 0; scroll-margin-top:120px; min-width:0; }
+body[data-theme=dark] .admin-subnavigation a[aria-current=page],body[data-theme=dark] .admin-sidebar nav a[aria-current=location] { background:var(--card); }
+@media(max-width:600px) { .admin-subnavigation { padding:12px; } .admin-subnavigation a { flex:1 1 140px; } .admin-overview-grid { gap:18px; } }
