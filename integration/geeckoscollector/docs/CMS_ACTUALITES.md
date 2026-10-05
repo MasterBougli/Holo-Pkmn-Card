@@ -22,3 +22,11 @@ Compilation finale Webpack, TypeScript et génération des pages réussies sur V
 ### Mise en ligne confirmée — 5 octobre 2026
 Après accord « Ok continue » de Bougli à la demande explicite, CMS 0.0.22 déployé. Build précédent conservé (.next.pre-news-20261005113037). API de session 200 ; web et worker running, OOM=false. Consultation en lecture seule : administration Actualités avec liste vide, journal public et actualités sur les deux accueils. Capture privée Audit/preuves/news-admin-0.0.22.png. Aucun article créé/publié, aucun import d’image réel ni suite de tests exécutée ; parcours complets encore à essayer. Couverture facultative. Ordre chronologique par défaut ; choix d’épinglage en attente.
 
+
+## Améliorations 0.0.23
+Menu Actualités lié au journal, rubrique active sur la liste et les articles. Liste des champs requis avant publication et liens directs vers les champs/blocs, validation partagée serveur/éditeur. Publication et programmation bloquées tant que ces éléments manquent ; couverture toujours facultative. Alerte du navigateur lors de la fermeture/recharge d’un brouillon non enregistré. Les boutons internes de retour/corbeille gardent leurs confirmations. Pas d’enregistrement automatique ni stockage du contenu dans le navigateur.
+
+
+### Livraison 0.0.23 préparée
+Compilation Webpack et TypeScript réussie sur VPS. Le contrôle automatique demande un accord explicite pour cette nouvelle livraison, l’accord précédent étant limité à 0.0.22. Aucun remplacement du build actif. Site toujours 0.0.22 ; stage .ui-audit-build.08h2l9ez prêt et worker relancé. Conseils de publication, alerte de fermeture de brouillon et navigation prêts, mais pas encore consultés en ligne. Aucun article, récompense ou événement créé et aucun test exécuté.
+

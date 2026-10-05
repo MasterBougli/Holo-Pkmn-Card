@@ -4,7 +4,7 @@ import {db} from "./db";
 import {newsArticles,newsVersions,newsMedia} from "./news-schema";
 import {adminAudit} from "./admin-schema";
 import {AdminError,lockAdminAccess,type AdminTransaction} from "./admin-authorisation";
-import {blankNews,validNews,newsUuid,newsMediaIds,parisSchedule,type NewsContent} from "./news-types";
+import {blankNews,validNews,newsUuid,newsMediaIds,parisSchedule,newsPublicationIssues,type NewsContent} from "./news-types";
 type Actor={id:string;username?:string|null;name:string};
 const effective=sql<NewsContent>`CASE WHEN scheduled_at <= now() AND scheduled IS NOT NULL THEN scheduled ELSE published END`;
 const visible=sql`archived_at IS NULL AND (published IS NOT NULL OR (scheduled_at <= now() AND scheduled IS NOT NULL))`;
@@ -16,7 +16,7 @@ export async function listNewsVersions(id:string){if(!newsUuid(id))throw new Adm
 export async function listNewsMedia(){return db.select({id:newsMedia.id,name:newsMedia.name,alt:newsMedia.alt,width:newsMedia.width,height:newsMedia.height}).from(newsMedia).orderBy(desc(newsMedia.createdAt)).limit(300);}
 async function checkMedia(tx:AdminTransaction,v:NewsContent,publishing=false){
  const ids=newsMediaIds(v);if(ids.length&&(await tx.select({id:newsMedia.id}).from(newsMedia).where(inArray(newsMedia.id,ids))).length!==ids.length)throw new AdminError("Une image n’existe plus dans la bibliothèque.",400);
- if(publishing&&(v.title.trim().length<3||!v.summary.trim()||!v.blocks.length||v.blocks.some(b=>b.type==="image"?(!b.mediaId||!b.alt?.trim()):(!b.text.trim()||(b.type==="link"&&!b.href)))||(v.coverId&&!v.coverAlt.trim())))throw new AdminError("Complète le titre (3 caractères), le résumé, les blocs et les descriptions alternatives des images avant publication.",400);
+ const issues=publishing?newsPublicationIssues(v):[];if(issues.length)throw new AdminError(issues.map(issue=>issue.message).join(" "),400);
 }
 export async function mutateNews(actor:Actor,body:Record<string,unknown>){
  const kind=body.kind;

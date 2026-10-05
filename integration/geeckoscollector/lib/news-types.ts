@@ -19,3 +19,25 @@ export function parisSchedule(v:string){
  if(matches.length!==1)throw Error("Cette heure est ambiguë ou inexistante lors du changement d’heure. Choisis une autre heure.");
  return matches[0];
 }
+
+export type NewsPublicationIssue={field:string;message:string};
+export function newsPublicationIssues(v:NewsContent):NewsPublicationIssue[]{
+ const issues:NewsPublicationIssue[]=[];
+ const add=(field:string,message:string)=>issues.push({field,message});
+ if(v.title.trim().length<3)add("news-title","Ajoute un titre d’au moins 3 caractères.");
+ if(!v.summary.trim())add("news-summary","Ajoute un résumé pour les accueils.");
+ if(!v.blocks.length)add("news-blocks","Ajoute au moins un bloc de contenu.");
+ if(v.coverId&&!v.coverAlt.trim())add("news-cover-alt","Décris l’image de couverture.");
+ if(v.link&&!safeNewsLink(v.link))add("news-link","Utilise une adresse http ou https valide pour le lien complémentaire.");
+ v.blocks.forEach((b,i)=>{
+  const label="Bloc "+(i+1)+" : ";
+  if(b.type==="image"){
+   if(!b.mediaId)add("block-image-"+b.id,label+"choisis une image.");
+   if(!b.alt?.trim())add("block-alt-"+b.id,label+"ajoute une description alternative.");
+  }else{
+   if(!b.text.trim())add("block-text-"+b.id,label+"ajoute le texte.");
+   if(b.type==="link"&&!safeNewsLink(b.href??""))add("block-link-"+b.id,label+"ajoute une adresse http ou https valide.");
+  }
+ });
+ return issues;
+}

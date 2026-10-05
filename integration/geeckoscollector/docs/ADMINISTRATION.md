@@ -6,7 +6,7 @@ Les modules d’apparence des cartes, rôles et permissions, attributions aux co
 
 Les profils holo par set et les exceptions par carte sont sauvegardés en PostgreSQL, avec historique des modifications. Voir [Holographie](HOLOGRAPHIE.md). Les anciennes maquettes supprimées volontairement n’ont pas été restaurées.
 
-Les rôles configurables et permissions détaillées sont implémentés. La configuration générale est disponible pour la maintenance et les inscriptions (voir CONFIGURATION.md). L’activation des séries, les imports administrateur, les prix et règles de boosters, l’économie, les récompenses, le CMS des actualités, les événements et la modération restent à développer.
+Les rôles configurables et permissions détaillées sont implémentés. La configuration générale est disponible pour la maintenance et les inscriptions (voir CONFIGURATION.md). Les séries, imports, tarifs des cartes, compositions et cadeaux de boosters, ainsi que le CMS des actualités, sont disponibles. Les événements, la modération, la progression et l’économie complète restent à développer.
 
 ## Catalogue à vérifier plus tard
 
@@ -20,9 +20,9 @@ L’administration devra permettre de comparer régulièrement le catalogue loca
 
 ## Étapes futures
 
-Les rôles et la navigation du panel sont disponibles. Poursuivre le cadrage de la configuration selon les besoins, puis développer les imports, le CMS des actualités et la modération. La consultation des comptes et les attributions de rôles existent ; les actions de modification/modération des comptes restent à cadrer. Poser les questions une par une.
+Les rôles et la navigation du panel sont disponibles. Poursuivre le cadrage de la configuration selon les besoins, puis poursuivre les événements, la modération et les mécaniques de progression. Les imports et le CMS sont livrés. La consultation des comptes et les attributions de rôles existent ; les actions de modification/modération des comptes restent à cadrer. Poser les questions une par une.
 
-## CMS des actualités — à prévoir
+## CMS des actualités — cadrage initial, module livré
 
 L’administration devra intégrer un CMS permettant de créer, modifier et publier les actualités affichées sur les accueils public et connecté. Cette demande est confirmée ; la fonction n’est pas encore développée.
 

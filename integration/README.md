@@ -1,4 +1,4 @@
-# Intégration GeeckosCollector — 0.0.22
+# Intégration GeeckosCollector — 0.0.23
 
 Cette adaptation utilise Pokémon Cards CSS de Simon Goellner (@simeydotme), GPL-3.0.
 Sources amont : https://github.com/simeydotme/pokemon-cards-css
@@ -149,4 +149,10 @@ Livraison CMS 0.0.22 : compilation validée, déploiement du site hôte en atten
 
 
 Mise en ligne CMS 0.0.22 confirmée le 5 octobre 2026 après autorisation. Module et accueils consultés en lecture seule ; aucun article de démonstration ni test de publication réel.
+
+
+## 0.0.23 — Aide à la rédaction
+Menu Actualités vers le journal avec état actif ; conseils de complétude partagés entre serveur et éditeur, liens vers les champs à compléter, alerte navigateur avant fermeture d’un brouillon non enregistré. Couverture toujours facultative. Aucun changement de schéma. Cadrage des événements dans docs/EVENEMENTS.md.
+
+Livraison 0.0.23 : compilation réussie ; mise en ligne du site hôte en attente d’accord explicite. Site actif 0.0.22.
 
